@@ -120,7 +120,79 @@ class FTPClient:
             self.ftp = None
         return None
 
-    # Command to connect to an FTP server
+    # Directory Operations
+    def do_ls(self, args):
+        path = args[0] if args else "."
+        print(f"Listing directory: {path}")
+        self._ftp_cmd(self.ftp.dir, path)
+
+    def do_cd(self, args): 
+        if not args:
+            print("Usage: cd <remote_directory>")
+            return
+        path = args[0]
+        resp = self._ftp_cmd(self.ftp.cwd, path)
+        if resp: 
+            self.current.remote_dir = self._ftp_cmd(self.ftp.pwd)
+            print(f"Changed directory to: {self.current_remote_dir}")
+
+    def do_lcd(self, args):
+        if not args:
+            print(f"Current local directory: {self.current_local_dir}")
+            return
+        path = args[0]
+        try:
+            os.chdir(path)
+            self.current_local_dir = os.getcwd()
+            print(f"Local directory changed to : {self.current_local_dir}")
+        except FileNotFoundError:
+            print(f"Error: local directory not found: {path}")
+        except Exception as e:
+            print(f"Error changing local directory: {e}")
+
+    def do_pwd(self, args):
+        remote_dir = self._ftp_cmd(self.ftp.pwd)
+        if remote_dir:
+            self.current_remote_dir= remote_dir
+            print(f"Current remote directory: {self.current_remote_dir}")
+
+    def do_mkdir(self, args):
+        if not args:
+            print("Usage: mkdir <directory_name>")
+            return
+        path = args[0]
+        resp = self._ftp_cmd(self.ftp.mkd, path)
+        if resp:
+            print(f"Directory created: {path}")
+
+    def do_rmdir(self, args):
+        if not args:
+            print("Usage: rmdir <directory_name>")
+            return
+        path = args[0]
+        resp = self._ftp_cmd(self.ftp.rmd, path)
+        if resp:
+            print(f"Directory removed: {path}")
+
+    def do_delete(self, args):
+        if not args:
+            print("Usage: delete <remote_filename>")
+            return
+        path = args[0]
+        resp = self._ftp_cmd(self.ftp.delete, path)
+        if resp:
+            print(f"File deleted: {path}")
+
+    def do_rename(self, args):
+        if len(args) != 2:
+            print("Usage: rename <from_name> <to_name>")
+            return
+        from_name, to_name = args
+        resp = self._ftp_cmd(self.ftp.rename, from_name, to_name)
+        if resp:
+            print(f"File renamed: {resp}")
+
+    # Session Management
     def do_open(self, args): 
         if self.connected:
             print("")
@@ -163,28 +235,3 @@ class FTPClient:
         print("Goodbye!")
         sys.exit(0)
     
-    def do_ls(self, args):
-        path = args[0] if args else "."
-        print(f"Listing directory: {path}")
-        self._ftp_cmd(self.ftp.dir, path)
-
-    def do_cd(self, args): 
-        if not args:
-            print("Usage: cd <remote_directory>")
-            return
-        path = args[0]
-        resp = self._ftp_cmd(self.ftp.cwd, path)
-        if resp: 
-            self.current.remote_dir = self._ftp_cmd(self.ftp.pwd)
-            print(f"Changed directory to: {self.current_remote_dir}")
-
-    def do_pwd(self, args):
-        remote_dir = self._ftp_cmd(self.ftp.pwd)
-        if remote_dir:
-            self.current_remote_dir= remote_dir
-            print(f"Current remote directory: {self.current_remote_dir}")
-
-    
-
-
-
