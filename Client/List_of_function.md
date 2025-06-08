@@ -59,3 +59,14 @@ do_putdir(self, args) # Tải lên toàn bộ một thư mục và các thư m�
 do_getdir(self, args) # Tải về toàn bộ một thư mục và các thư mục con từ FTP server (recursive download).
 
 log_event(self, msg) # Ghi log các hành động và sự kiện (upload, download, kết quả quét virus...) vào file log.
+
+```sh
+ftp_client/
+├── __main__.py            # Điểm khởi chạy chính (gọi run)
+├── client.py              # Lớp FTPClientApp chính
+├── ftp_commands.py        # Các lệnh do_* (do_get, do_put, ...)
+├── ftp_helpers.py         # Hàm helper (_download_file, _upload_file, _ftp_cmd)
+├── virus_scan.py          # Kết nối ClamAV Agent (_connect_to_agent)
+├── config.py              # Cấu hình (host, port, buffer size...)
+└── utils.py               # Tiện ích phụ nếu cần
+```
