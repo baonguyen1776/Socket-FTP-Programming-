@@ -15,8 +15,8 @@ class FtpCommands(cmd.Cmd):
 
     def __init__(self):
         super().__init__()
-        self.ftp = None
-        self.ftp_helpers = None
+        self.ftp = FTP(self.ftp)
+        self.ftp_helpers = FTPHelpers(self.ftp)
         self.virus_scanner = VirusScan()
         self.current_local_dir = os.getcwd()
         self.current_ftp_dir = "/" # Thư mục hiện tại trên FTP server
@@ -165,5 +165,164 @@ class FtpCommands(cmd.Cmd):
             print(f"Successfully downloaded {remote_file} to {local_path}")
         else: 
             print(f"Cannot download file {remote_file}")
+
+    def do_recv(self, args): # Alias (bí danh) cho do_get – hoạt động giống hệt.
+        """recv: Alias cho lệnh get.
+        Sử dụng: recv <tên_file_từ_xa> [tên_file_cục_bộ]
+        """
+        self.do_get(args)
+
+    def do_mget(self, args):  # Tải về nhiều file từ FTP server, hỗ trợ wildcard (*).
+        """mget: Tải về nhiều file từ FTP server, hỗ trợ wildcard (*).
+        Sử dụng: mget <pattern>
+        """
+        if not args: 
+            print(f"Please enter pattern")
+            return
+        
+        pattern = args
+        try:
+            all_remote_file = self._ftp_cmd(self.ftp.nlst)
+            if all_remote_file is None:
+                return 
+            
+            matching_files = []
+            import fnmatch
+            for f in all_remote_file:
+                if fnmatch.fnmatch(f, pattern):
+                    matching_files.append(f)
+
+            if not matching_files:
+                print(f"No files matched the pattern \'{pattern}\'.")
+                return
+
+            os.makedirs(Config.DOWNLOAD_DIR, exist_ok=True)
+            download_count = 0
+
+            for remote_file in matching_files:
+                local_file = os.path.join(Config.DOWNLOAD_DIR, os.path.basename(remote_file))
+
+                confirm = 'y'
+                if self.prompt_on_mget_mput: 
+                    confirm = input(f"Download {remote_file} to {local_file}? (y/n/a): ").lower().strip()
+                    if confirm == 'a':
+                        self.prompt_on_mget_mput = False
+                        confirm = 'y'
+                    elif confirm != 'y':
+                        print(f"Skipped {remote_file}.")
+                        continue
+                
+                if self.ftp_helpers._download_file(remote_file, local_file, self.transfer_mode):
+                    print(f"Successfully downloaded {remote_file}.")
+                    download_count += 1
+                else: 
+                    print(f"Unable to download {remote_file}.")
+            print(f"mget complete. Downloaded {download_count} file(s).")
+        
+        except all_errors as e:
+            print(f"Error: {e}")
+            Utils.log_event(f"Error executing mget command: {e}", level=logging.ERROR)
+
+    def do_put(self, args): # Tải 1 file từ máy cục bộ lên FTP server (phải qua quét virus trước).
+        """put: Tải một file từ máy cục bộ lên FTP server (phải qua quét virus trước).
+        Sử dụng: put <tên_file_cục_bộ> [tên_file_từ_xa]
+        """
+        if not args: 
+            print("Please provide the local file name.")
+            return
+        args = args.split()
+        local_file = args[0]
+        remote_file = args[1] if len(args) > 1 else os.path.basename(local_file)
+
+        if not os.path.exists(local_file):
+            print(f"Error: Local file \'{local_file}\' not exist.")
+            return
+
+        print(f"Scanning for viruses in file {local_file}...")
+        is_clean, message = self.virus_scanner.scan_file(local_file)
+
+        if is_clean:
+            print(f"File {local_file} clean. Downloading...")
+            if self.ftp_helpers._upload_file(local_file, remote_file, self.transfer_mode):
+                print(f"Successfully uploaded {local_file} to {remote_file}.")
+            else: 
+                print(f"Unable to upload {local_file}.")
+        else:
+            print(f"Warning: {message} Upload canceled.")
+            Utils.log_event(f"Upload of file {local_file} canceled due to virus: {message}.", level=logging.WARNING)
+
+    def do_mput(self, args): # Tải nhiều file từ máy cục bộ lên FTP server, quét hết trước khi upload.
+        """mput: Tải nhiều file từ máy cục bộ lên FTP server, quét hết trước khi upload.
+        Sử dụng: mput <pattern>
+        """
+        if not args: 
+            print(f"Please enter pattern.")
+            return 
+        
+        local_files = glob.glob(args)
+        if not local_files:
+            print(f"No files matched the pattern \'{args}\'.")
+            return
+        
+        files_to_upload = []
+        for local_file in local_files:
+            if os.path.isfile(local_file):
+                confirm = 'y'
+                if self.prompt_on_mget_mput:
+                    confirm - input(f"Download {local_file}? (y/n/a): ").lower().strip()
+                    if confirm == 'a':
+                        self.prompt_on_mget_mput = False
+                        confirm = 'y'
+                elif confirm != 'y':
+                    files_to_upload.append(local_file)
+
+        if not files_to_upload:
+            print("No files selected for upload.")
+            return
+        
+        print("Scanning selected files for viruses...")
+        clean_files = []
+        for f in files_to_upload:
+            is_clean, message = self.virus_scanner.scan_file(f)
+            if is_clean:
+                clean_files.append(f)
+            else: 
+                print (f"Warning: File {f} - {message}. Will not upload.")
+                Utils.log_event(f"File {f} was not uploaded due to virus: {message}", level=logging.WARNING)
+
+
+        if not clean_files:
+            print("No clean files available for upload.")
+            return
+        
+        print("Downloading clean file...")
+        for local_file in clean_files:
+            remote_file = os.path.basename(local_file)
+            if self.ftp_helpers._upload_file(local_file, remote_file, self.transfer_mode):
+                print(f"Successfully uploaded {local_file} to {remote_file}")
+            else: 
+                print(f"Unable to upload {local_file}")
+
+    def do_prompt(self, args): # Bật/tắt chế độ xác nhận khi dùng mget hoặc mput.
+        """prompt: Bật/tắt chế độ xác nhận khi dùng mget hoặc mput.
+        Sử dụng: prompt
+        """
+        self.prompt_on_mget_mput = not self.prompt_on_mget_mput
+        status = "ON" if self.prompt_on_mget_mput else "OFF"
+        print(f"Confirmation mode (prompt) has been {status}.")
+
+    def do_ascii(self, args): # Chuyển chế độ truyền file sang ASCII (text mode).
+        """ascii: Chuyển chế độ truyền file sang ASCII (text mode).
+        Sử dụng: ascii
+        """
+        if not self.connected: 
+            self.not_connected() 
+            return
+        self._ftp_cmd(self.ftp.voidcmd, "TYPE I")
+        self.transfer_mode = 'binary'
+        print("Switched to Binary mode.")
+
+    
+
 
     
