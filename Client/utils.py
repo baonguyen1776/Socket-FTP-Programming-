@@ -4,8 +4,9 @@ from config import Config
 # Cấu hình logging
 logging.basicConfig(level=Config.LOG_LEVEL, 
                     format="%(asctime)s - %(levelname)s - %(message)s", 
-                    handlers=[logging.StreamHandler(), 
-                              logging.FileHandler(Config.LOG_FILE)
+                    handlers=[
+                        logging.StreamHandler(), 
+                        logging.FileHandler(Config.LOG_FILE)
                     ])
 
 class Utils: 

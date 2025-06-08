@@ -8,10 +8,10 @@ class FTPHelpers:
     def __init__(self, ftp_connection):
         self.ftp = ftp_connection
 
-    def _download_file(self, remote_path, local_path, transfor_mode):
-        Utils.log_event("Downloading from {remote_path} to local machine {local_path} ({transfer_mode})...")
+    def _download_file(self, remote_path, local_path, transfer_mode):
+        Utils.log_event(f"Downloading {remote_path} to {local_path} ({transfer_mode})...")
         try:
-            if transfor_mode == 'binary':
+            if transfer_mode == 'binary':
                 with open(local_path, "wb") as f:
                     self.ftp.retrbinary(f"RETR {remote_path}", f.write)
             else:

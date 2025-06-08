@@ -53,7 +53,7 @@ class VirusScan:
                 # 5. Nhận kết quả từ agent
                 result_bytes = sock.recv(16)
                 scan_result = result_bytes.decode("utf-8").strip()
-                Utils.log_event("Result of scanned virus for \'{filename}\': {scan_result}")
+                Utils.log_event(f"Virus scan result for \'{filename}\': {scan_result}")
 
                 if scan_result == "OK":
                     return True, "Good file."
