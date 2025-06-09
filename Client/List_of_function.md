@@ -70,3 +70,59 @@ ftp_client/
 ├── config.py              # Cấu hình (host, port, buffer size...)
 └── utils.py               # Tiện ích phụ nếu cần
 ```
+
+# 📁 Các Lệnh FTP Phổ Biến Trong Python (ftplib)
+
+Dưới đây là tổng hợp các hàm thường dùng trong thư viện `ftplib` của Python khi làm việc với FTP server.
+
+---
+
+## 📚 Bảng Hàm và Công Dụng
+
+| **Hàm**                    | **Công Dụng**                                                                        |
+| -------------------------- | ------------------------------------------------------------------------------------ |
+| `ftp.pwd()`                | Trả về **thư mục hiện tại** trên server FTP (giống lệnh `pwd` trong Unix).           |
+| `ftp.cwd(path)`            | **Chuyển thư mục hiện tại** đến `path` trên server FTP.                              |
+| `ftp.dir()`                | **Liệt kê chi tiết thông tin** về file/thư mục (giống `ls -l`).                      |
+| `ftp.nlst()`               | Trả về **danh sách tên file/thư mục** trong thư mục hiện tại.                        |
+| `ftp.retrbinary(cmd, f)`   | **Tải file nhị phân từ server.** Thường dùng: `ftp.retrbinary("RETR file", f.write)` |
+| `ftp.storbinary(cmd, f)`   | **Gửi file nhị phân lên server.** Ví dụ: `ftp.storbinary("STOR file", f)`            |
+| `ftp.delete(filename)`     | **Xoá một file** trên server.                                                        |
+| `ftp.mkd(path)`            | **Tạo thư mục mới** trên server.                                                     |
+| `ftp.rmd(path)`            | **Xoá thư mục rỗng** trên server.                                                    |
+| `ftp.rename(from, to)`     | **Đổi tên** hoặc **di chuyển file** từ `from` sang `to`.                             |
+| `ftp.quit()`               | **Đóng kết nối** FTP một cách lịch sự.                                               |
+| `ftp.login(user, passwd)`  | Đăng nhập vào server FTP với tên người dùng và mật khẩu.                             |
+| `ftp.connect(host, port)`  | Kết nối đến server FTP tại địa chỉ `host` và `port`.                                 |
+| `ftp.set_pasv(True/False)` | Bật/tắt chế độ **Passive Mode** (nên dùng `True` với tường lửa/NAT).                 |
+
+---
+
+## 🔍 So Sánh Nhanh Một Số Hàm
+
+| Hàm         | Trả về gì?               | Mục đích                  |
+| ----------- | ------------------------ | ------------------------- |
+| `pwd()`     | Chuỗi đường dẫn          | Xác định thư mục hiện tại |
+| `cwd(path)` | Không trả về gì          | Đổi thư mục hiện tại      |
+| `dir()`     | In ra thông tin chi tiết | Giống `ls -l`             |
+| `nlst()`    | List tên file (chuỗi)    | Lấy danh sách đơn giản    |
+
+---
+
+## 🧪 Ví Dụ Cơ Bản
+
+```python
+from ftplib import FTP
+
+ftp = FTP('ftp.example.com')
+ftp.login('username', 'password')
+
+print("Thư mục hiện tại:", ftp.pwd())  # /home/user
+
+ftp.cwd('documents')                   # chuyển vào thư mục documents
+print("Đang ở thư mục:", ftp.pwd())    # /home/user/documents
+
+ftp.dir()                              # in thông tin chi tiết các file
+file_list = ftp.nlst()                 # lấy danh sách tên file đơn giản
+print("Danh sách file:", file_list)
+```

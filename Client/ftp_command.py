@@ -15,8 +15,8 @@ class FtpCommands(cmd.Cmd):
 
     def __init__(self):
         super().__init__()
-        self.ftp = FTP(self.ftp)
-        self.ftp_helpers = FTPHelpers(self.ftp)
+        self.ftp = None
+        self.ftp_helpers = None
         self.virus_scanner = VirusScan()
         self.current_local_dir = os.getcwd()
         self.current_ftp_dir = "/" # Thư mục hiện tại trên FTP server
@@ -370,14 +370,213 @@ class FtpCommands(cmd.Cmd):
         """
         super().do_help(args)
 
-    # def do_open(self, args): # Kết nối tới một FTP server bằng hostname/IP và port.
-    #     """open: Kết nối tới một FTP server.
-    #     Sử dụng: open [host] [port]
-    #     Mặc định: host=test.rebex.net, port=21
-    #     """
-    #     if self.connected:
-    #         print(f"")
+    def do_open(self, args): # Kết nối tới một FTP server bằng hostname/IP và port.
+        """open: Kết nối tới một FTP server.
+        Sử dụng: open [host] [port]
+        Mặc định: host=test.rebex.net, port=21
+        """
+        if self.connected:
+            print(f"Connected to {self.ftp.host}. Please use \'close\' first.")
+            return 
 
+        host = Config.FTP_HOST
+        port = Config.FTP_PORT
 
+        args = args.split()
+        if len(args) > 0: 
+            host = args[0]
+        if len(args) > 1:
+            try:
+                port = int(args[1])
+            except ValueError:
+                print(f"Error: Port is not integer")
+                return
+            
+        print(f"Connecting {host}:{port}...")
+        try: 
+            self.ftp = FTP()
+            self.ftp.connect(host, port, timeout=60)
+
+            # Nhập username and pasword
+            user = input(f"User ({host}): ")
+            password = input(f"Password: ")
+
+            login_resp = self.ftp.login(user, password)
+            print(login_resp)
+            self.connected = True
+            self.ftp_helpers = FTPHelpers(self.ftp)
+            self.current_ftp_dir = self.ftp.pwd()
+            print(f"Successfully connected to {host}. Logged in with user: {user}")
+            self.ftp.set_pasv(self.passive_mode)
+        except all_errors as e:
+            print(f"Error connected with FTP: {e}")
+            Utils.log_event(f"Error connected to {host}:{port}: {e}", level=logging.ERROR)
+            self.ftp = None
+            self.connected = False
+        except socket.error as e:
+            print(f"Network error occurred during connection: {e}")
+            Utils.log_event(f"Network error occurred during connection to {host}:{port}: {e}", level=logging.ERROR)
+            self.ftp = None
+            self.connected = False
+
+    def do_close(self, args): # Ngắt kết nối với FTP server.
+        """close: Ngắt kết nối với FTP server.
+        Sử dụng: close
+        """
+        if not self.connected: 
+            print("Not connected.")
+            return
+        resp = self._ftp_cmd(self.ftp.quit)
+        if resp: 
+            print(resp)
+        self.ftp = None
+        self.connected = False
+        self.ftp_helpers = None
+        self.current_ftp_dir = "/"
+        print("Disconnected.")
+        Utils.log_event("Disconnected to FTP")
+
+    def do_quit(self, args): # Thoát khỏi chương trình client.
+        """quit: Thoát khỏi chương trình client.
+        Sử dụng: quit
+        """
+        print(f"Exiting FTP Client.")
+        Utils.log_event("Exiting FTP Client.")
+        if self.connected: 
+            self.do_close("")
+        return True
+
+    def do_lcd(self, args): # Thay đổi thư mục làm việc hiện tại của máy cục bộ.
+        """lcd: Thay đổi thư mục làm việc hiện tại của máy cục bộ.
+        Sử dụng: lcd [đường_dẫn]
+        Nếu không có đối số, in ra thư mục hiện tại.
+        """
+        if not args:
+            print(f"Local directory: {self.current_local_dir}")
+            return 
+        try:
+            os.chdir(args)
+            self.current_local_dir = os.getcwd()
+            print(f"Moved to local directory: {self.current_local_dir}")
+            Utils.log_event(f"Moved to local directory: {self.current_local_dir}")
+        except OSError as e:
+            print(f"Error: Unable to change local directory: {e}")
+            Utils.log_event(f"Error: Unable to change local directory: {e}", level=logging.ERROR)
     
+    def _recursive_upload(self, local_path, remote_path): # Hàm hỗ trợ tải lên thư mục đệ quy
+        try:
+            self._ftp_cmd(self.ftp.mkd, remote_path)
+        except all_errors as e:
+            if "File exists" not in str(e):
+                print(f"Error when creating the remote directory {remote_path}: {e}")
+                Utils.log_event(f"Error when creating the remote directory {remote_path}: {e}", level=logging.ERROR)
+                return
+        original_ftp_dir = self.ftp.pwd()
+        self._ftp_cmd(self.ftp.cwd, remote_path)
+
+        print("Scanning and uploading files…")
+        for item in os.listdir(local_path):
+            local_item_path = os.path.join(local_path, item)
+            remote_item_path = item
+
+            if os.path.isfile(local_item_path):
+                is_clean, message = self.virus_scanner.scan_file(local_item_path)
+                if is_clean:
+                    if self.ftp_helpers._upload_file(local_item_path, remote_item_path, self.transfer_mode):
+                        print(f"  Successfully uploaded {item}")
+                    else: 
+                        print(f"  Unable to upload {item}")
+                else:
+                    print(f"  Warning: File {item} - {message}. Will not upload.")  
+                    Utils.log_event(f"File {item} not uploaded due to virus: {message}", level=logging.WARNING)
+            elif os.path.isdir(local_item_path):
+                print(f"  Processing subdirectory: {local_item_path}")
+                self._recursive_upload(local_item_path, remote_item_path)
+
+        self._ftp_cmd(self.ftp.cwd, original_ftp_dir) # quay đầu lại thư mục ban đầu
+
+    def do_putdir(self, args):  # Tải lên toàn bộ một thư mục và các thư mục con lên FTP server (recursive upload).
+        """putdir: Tải lên toàn bộ một thư mục và các thư mục con lên FTP server (recursive upload).
+        Sử dụng: putdir <đường_dẫn_thư_mục_cục_bộ> [đường_dẫn_thư_mục_từ_xa]
+        """
+        if not self.connected: 
+            self.not_connected()
+            return 
+        if not args:
+            print(f"Please provide the local directory path.")
+            return 
+        
+        args = args.split()
+        local_dir = args[0]
+        remote_dir = args[1] if len(args) > 1 else os.path.basename(local_dir)
+
+        if not os.path.isdir(local_dir):
+            print(f"Error: Local directory \'{local_dir}\' does not exist or is not a directory.")
+
+        print(f"Uploading directory {local_dir} to {remote_dir}...")
+        self._recursive_upload(local_dir, remote_dir)
+        print(f"Upload of directory {local_dir} completed.")
+    
+    def _recursive_download(self, remote_path, local_path): # Hàm hỗ trợ tải xuống thư mục đệ quy
+        os.makedirs(local_path, exist_ok=True)
+        original_ftp_dir = self.ftp.pwd()
+
+        try:
+            self._ftp_cmd(self.ftp.cwd, remote_path)
+        except all_errors as e:
+            print(f"Error: Unable to access remote directory {remote_path}: {e}")
+            Utils.log_event(f"Error: Unable to access remote directory {remote_path}: {e}", level=logging.ERROR)
+
+        items = []
+        self._ftp_cmd(self.ftp.dir, items.append) 
+
+        for line in items:
+            parts = line.split(maxsplit=8)
+            if len(parts) < 9:
+                continue
+            
+            permissions = parts[0]
+            item_name = parts[8]
+
+            if item_name in (".", ".."): 
+                continue
+
+            remote_item_path = item_name
+            local_item_path = os.path.join(local_path, item_name)
+
+            if permissions.startswith("d"):
+                print(f"  Processing subdirectory: {remote_item_path}")
+                self._recursive_download(remote_item_path, local_item_path)
+            else: 
+                print(f"  Downloading file: {remote_item_path}")
+                if self.ftp_helpers._download_file(remote_item_path, local_item_path, self.transfer_mode):
+                    print(f"  Successfully downloaded {item_name}")  
+                else:  
+                    print(f"  Unable to download {item_name}")
+        
+        self._ftp_cmd(self.ftp.cwd, original_ftp_dir) # Quay lại thư mục ban đầu
+
+    def do_getdir(self, args): # Tải về toàn bộ một thư mục và các thư mục con từ FTP server (recursive download).
+        """getdir: Tải về toàn bộ một thư mục và các thư mục con từ FTP server (recursive download).
+        Sử dụng: getdir <đường_dẫn_thư_mục_từ_xa> [đường_dẫn_thư_mục_cục_bộ]
+        """
+        if not self.connected:
+            self.not_connected()
+            return 
+        if not args: 
+            print("Please provide the remote directory path.")
+            return 
+        
+        args = args.split()
+        remote_dir = args[0]
+        local_dir = args[1] if len(args) > 1 else os.path.basename(remote_dir)
+
+        print(f"Downloading directory {remote_dir} to {local_dir}...")  
+        self._recursive_download(remote_dir, local_dir)  
+        print(f"Download of directory {remote_dir} completed.")
+
+
+
+
+            
     
