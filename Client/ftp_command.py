@@ -311,6 +311,9 @@ class FtpCommands(cmd.Cmd):
         status = "ON" if self.prompt_on_mget_mput else "OFF"
         print(f"Confirmation mode (prompt) has been {status}.")
 
+    def not_connected(self): # Thông báo khi chưa kết nối FTP
+        print("Not connected to the FTP server. Please use the \'open\' command to connect.")
+
     def do_ascii(self, args): # Chuyển chế độ truyền file sang ASCII (text mode).
         """ascii: Chuyển chế độ truyền file sang ASCII (text mode).
         Sử dụng: ascii
@@ -318,11 +321,63 @@ class FtpCommands(cmd.Cmd):
         if not self.connected: 
             self.not_connected() 
             return
+        self._ftp_cmd(self.ftp.voidcmd, "TYPE A")
+        self.transfer_mode = 'ascii'
+        print("Switched to ASCII mode.")
+
+    def do_binary(self, args): # Chuyển chế độ truyền file sang binary (dạng nhị phân).
+        """binary: Chuyển chế độ truyền file sang binary (dạng nhị phân).
+        Sử dụng: binary
+        """
+        if not self.connected:
+            self.not_connected()
+            return
         self._ftp_cmd(self.ftp.voidcmd, "TYPE I")
         self.transfer_mode = 'binary'
         print("Switched to Binary mode.")
 
+    def do_status(self, args): # Hiển thị trạng thái kết nối hiện tại và các chế độ truyền.
+        """status: Hiển thị trạng thái kết nối hiện tại và các chế độ truyền.
+        Sử dụng: status
+        """
+        if self.connected:
+            print("Connection status: Connected.")
+            print(f"Host: {self.ftp.host}, Port: {self.ftp.port}")
+            print(f"Current local directory: {self.current_local_dir}")
+            try:
+                print(f"Current FTP directory: {self.ftp.pwd()}")
+            except all_errors:
+                print("Unable to retrieve the current FTP directory (possibly due to connection error).")
+        else: 
+            print("Connection status: Not connected.")
+        print(f"Confirmation mode (prompt) for mget/mput: {"ON" if self.prompt_on_mget_mput else "OFF"}")
+        print(f"File transfer mode: {self.transfer_mode}")
+        print(f"Passive FTP mode: {"ON" if self.passive_mode else "OFF"}")
+
+    def do_passive(self, args): # Bật/tắt chế độ passive FTP.
+        """passive: Bật/tắt chế độ passive FTP.
+        Sử dụng: passive
+        """
+        self.passive_mode = not self.passive_mode
+        status = "ON" if self.passive_mode else "OFF"
+        print(f"Passive FTP mode: {status}.")
+        if self.connected:
+            self._ftp_cmd(self.ftp.set_pasv, self.passive_mode)
     
+    def do_help(self, args): # Hiển thị danh sách lệnh và hướng dẫn sử dụng.
+        """help: Hiển thị danh sách lệnh và hướng dẫn sử dụng.
+        Sử dụng: help [lệnh]
+        """
+        super().do_help(args)
+
+    # def do_open(self, args): # Kết nối tới một FTP server bằng hostname/IP và port.
+    #     """open: Kết nối tới một FTP server.
+    #     Sử dụng: open [host] [port]
+    #     Mặc định: host=test.rebex.net, port=21
+    #     """
+    #     if self.connected:
+    #         print(f"")
 
 
+    
     
