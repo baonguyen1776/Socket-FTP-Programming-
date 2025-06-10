@@ -44,4 +44,4 @@ class FTPHelpers:
         except Exception as e:
             Utils.log_event(f"Error upload file {local_path}: {e}", level=logging.ERROR)
             return False
-                
+        

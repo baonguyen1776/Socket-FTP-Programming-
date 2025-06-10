@@ -3,7 +3,7 @@ import logging
 
 class Config:
     # Cấu hình kết nối FTP
-    FTP_HOST = 'test.rebex.net'
+    FTP_HOST = '127.0.0.1'
     FTP_PORT = 21
     # FTP_USERNAME và FTP_PASSWORD sẽ được nhập khi kết nối
 

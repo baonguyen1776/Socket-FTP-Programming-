@@ -574,9 +574,3 @@ class FtpCommands(cmd.Cmd):
         print(f"Downloading directory {remote_dir} to {local_dir}...")  
         self._recursive_download(remote_dir, local_dir)  
         print(f"Download of directory {remote_dir} completed.")
-
-
-
-
-            
-    
