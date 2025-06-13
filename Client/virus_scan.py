@@ -1,8 +1,8 @@
 import socket
 import struct
 import os
-from .config import Config
-from .utils import Utils
+from config import Config
+from utils import Utils
 import logging
 
 class VirusScan:

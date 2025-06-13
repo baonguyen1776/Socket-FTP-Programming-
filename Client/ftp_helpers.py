@@ -1,7 +1,7 @@
 from ftplib import FTP 
 import os
-from .utils import Utils
-from .config import Config
+from utils import Utils
+from config import Config
 import logging
 
 class FTPHelpers:

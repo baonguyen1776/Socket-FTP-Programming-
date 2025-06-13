@@ -1,5 +1,5 @@
-from .ftp_command import FTPCommands
-from .utils import Utils
+from ftp_command import FTPCommands
+from utils import Utils
 import logging
 
 class FTPClientApp(FTPCommands):

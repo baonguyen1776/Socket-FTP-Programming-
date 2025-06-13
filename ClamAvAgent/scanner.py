@@ -11,7 +11,7 @@ class ClamAVScanner:
                 return "ERROR_FILE_NOT_FOUND"
             
             command = ["clamscan", "--no-summary", file_path]
-            logging.info(f"Executing command: {" ".join(command)}")
+            logging.info(f"Executing command: {' '.join(command)}")
 
             process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout, stderr = process.communicate()

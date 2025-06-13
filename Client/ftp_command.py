@@ -3,13 +3,13 @@ from ftplib import FTP, all_errors, error_perm, error_temp, error_proto
 import os
 import glob
 import socket
-from .ftp_helpers import FTPHelpers
-from .virus_scan import VirusScan
-from .utils import Utils
-from .config import Config
+from ftp_helpers import FTPHelpers
+from virus_scan import VirusScan
+from utils import Utils
+from config import Config
 import logging
 
-class FtpCommands(cmd.Cmd):
+class FTPCommands(cmd.Cmd):
     intro = "Welcome to FTP Client. Type 'help' or '?' to view commands.\n"
     prompt = "ftp> "
 
@@ -350,9 +350,10 @@ class FtpCommands(cmd.Cmd):
                 print("Unable to retrieve the current FTP directory (possibly due to connection error).")
         else: 
             print("Connection status: Not connected.")
-        print(f"Confirmation mode (prompt) for mget/mput: {"ON" if self.prompt_on_mget_mput else "OFF"}")
+        mode = 'ON' if self.prompt_on_mget_mput else 'OFF'
+        print(f"Confirmation mode (prompt) for mget/mput: {mode}")
         print(f"File transfer mode: {self.transfer_mode}")
-        print(f"Passive FTP mode: {"ON" if self.passive_mode else "OFF"}")
+        print(f"Passive FTP mode: {mode}")
 
     def do_passive(self, args): # Bật/tắt chế độ passive FTP.
         """passive: Bật/tắt chế độ passive FTP.
