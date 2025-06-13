@@ -16,7 +16,7 @@ do_rename(self, args) # Đổi tên một file hoặc thư mục trên FTP serve
 
 # ⬇️⬆️ File Transfer – Tải lên / tải xuống file
 
-do_get(self, args) # Tải về 1 file từ FTP server về máy cục bộ.
+do_get(self, args) # Tải về 1 file từ FTP server về máy cục bộ.        
 
 do_recv(self, args) # Alias (bí danh) cho do_get – hoạt động giống hệt.
 
