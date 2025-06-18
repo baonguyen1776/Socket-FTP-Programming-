@@ -12,6 +12,7 @@ class ClientHandler(threading.Thread):
     """Lớp xử lý kết nối từ mỗi client."""
 
     def __init__(self, client_socket: socket.socket, client_address: Tuple[str, int], scanner: ClamAVScanner):
+        super().__init__()
         threading.Thread.__init__(self)
         self.client_socket = client_socket
         self.clien_address = client_address

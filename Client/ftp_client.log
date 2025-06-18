@@ -1,0 +1,30 @@
+2025-06-13 14:57:43,250 - INFO - FTP Client application has started.
+2025-06-13 14:58:15,471 - INFO - Exiting FTP Client.
+2025-06-13 14:59:55,065 - INFO - FTP Client application has started.
+2025-06-13 15:02:07,090 - ERROR - Error connected to 127.0.0.1:21: 530 Login incorrect.
+2025-06-13 15:06:48,274 - INFO - Connecting to ClamAV Agent at 127.0.0.1:9001 to scan 'List_of_function.md'...
+2025-06-13 15:07:18,347 - ERROR - Error: Connecting to ClamAV agent has timed out.
+2025-06-13 15:07:18,347 - WARNING - Upload of file List_of_function.md canceled due to virus: ERROR_TIMEOUT.
+2025-06-13 15:09:00,939 - INFO - Exiting FTP Client.
+2025-06-13 15:09:00,939 - INFO - Disconnected to FTP
+2025-06-13 15:12:41,983 - INFO - FTP Client application has started.
+2025-06-13 15:13:06,088 - INFO - Connecting to ClamAV Agent at 127.0.0.1:9001 to scan 'List_of_function.md'...
+2025-06-13 15:13:36,094 - ERROR - Error: Connecting to ClamAV agent has timed out.
+2025-06-13 15:13:36,094 - WARNING - Upload of file List_of_function.md canceled due to virus: ERROR_TIMEOUT.
+2025-06-13 15:13:45,513 - INFO - Connecting to ClamAV Agent at 127.0.0.1:9001 to scan 'test.txt'...
+2025-06-13 15:14:15,568 - ERROR - Error: Connecting to ClamAV agent has timed out.
+2025-06-13 15:14:15,570 - WARNING - Upload of file test.txt canceled due to virus: ERROR_TIMEOUT.
+2025-06-13 15:14:20,060 - INFO - Exiting FTP Client.
+2025-06-13 15:14:20,060 - INFO - Disconnected to FTP
+2025-06-13 21:02:36,581 - INFO - FTP Client application has started.
+2025-06-13 21:04:08,072 - INFO - Connecting to ClamAV Agent at 127.0.0.1:9001 to scan 'List_of_function.md'...
+2025-06-13 21:04:38,121 - ERROR - Error: Connecting to ClamAV agent has timed out.
+2025-06-13 21:04:38,121 - WARNING - Upload of file List_of_function.md canceled due to virus: ERROR_TIMEOUT.
+2025-06-13 21:04:56,718 - INFO - Exiting FTP Client.
+2025-06-13 21:04:56,719 - INFO - Disconnected to FTP
+2025-06-18 10:02:17,701 - INFO - FTP Client application has started.
+2025-06-18 10:03:19,920 - INFO - Connecting to ClamAV Agent at 127.0.0.1:9001 to scan 'List_of_function.md'...
+2025-06-18 10:03:49,948 - ERROR - Error: Connecting to ClamAV agent has timed out.
+2025-06-18 10:03:49,948 - WARNING - Upload of file List_of_function.md canceled due to virus: ERROR_TIMEOUT.
+2025-06-18 10:03:59,068 - INFO - Exiting FTP Client.
+2025-06-18 10:03:59,068 - INFO - Disconnected to FTP
