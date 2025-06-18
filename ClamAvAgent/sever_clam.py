@@ -12,7 +12,7 @@ class ClamAVAgentServer:
     def __init__(self, host: str, port: int):
         self.host = host
         self.port = port
-        self.sever_socket: socket.socket | None = None
+        self.server_socket: socket.socket | None = None
         self.scanner = ClamAVScanner()
 
         if not os.path.exists(TEMP_DIR):
@@ -24,19 +24,19 @@ class ClamAVAgentServer:
 
     def start(self):
         try:
-            self.sever_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.sever_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            self.sever_socket.bind((self.host, self.port))
-            self.sever_socket.listen(3)
+            self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.server_socket.bind((self.host, self.port))
+            self.server_socket.listen(3)
             logging.info(f"ClamAV Agent is listening on {self.host}:{self.port}")
 
             while True: 
                 try:
                     client_socket: socket.socket
                     client_address = Tuple[str, int]
-                    client_socket, client_address = self.sever_socket.accept()
+                    client_socket, client_address = self.server_socket.accept()
 
-                    client_socket.timeout(60)
+                    client_socket.settimeout(60)
                     handler = ClientHandler(client_socket, client_address, self.scanner)
                     handler.start()
                 except socket.timeout:
@@ -56,9 +56,9 @@ class ClamAVAgentServer:
     
     def stop(self):
         logging.info("Stopping ClamAV Agent Server...")
-        if self.sever_socket:
+        if self.server_socket:
             try:
-                self.sever_socket.close()
+                self.server_socket.close()
                 logging.info(f"Server socket is closed")
             except Exception as e:
                 logging.error(f"Error close ClamAV Server")

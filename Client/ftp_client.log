@@ -28,3 +28,66 @@
 2025-06-18 10:03:49,948 - WARNING - Upload of file List_of_function.md canceled due to virus: ERROR_TIMEOUT.
 2025-06-18 10:03:59,068 - INFO - Exiting FTP Client.
 2025-06-18 10:03:59,068 - INFO - Disconnected to FTP
+2025-06-18 10:28:44,839 - INFO - FTP Client application has started.
+2025-06-18 10:29:14,252 - INFO - Connecting to ClamAV Agent at 127.0.0.1:9001 to scan 'List_of_function.md'...
+2025-06-18 10:29:14,285 - ERROR - A socket error occurred while connecting to the ClamAV agent: [WinError 10054] An existing connection was forcibly closed by the remote host
+2025-06-18 10:29:14,286 - WARNING - Upload of file List_of_function.md canceled due to virus: ERROR_CONNECTION.
+2025-06-18 10:31:23,577 - INFO - Connecting to ClamAV Agent at 127.0.0.1:9001 to scan 'List_of_function.md'...
+2025-06-18 10:31:23,593 - ERROR - A socket error occurred while connecting to the ClamAV agent: [WinError 10053] An established connection was aborted by the software in your host machine
+2025-06-18 10:31:23,593 - WARNING - Upload of file List_of_function.md canceled due to virus: ERROR_CONNECTION.
+2025-06-18 10:31:39,676 - INFO - Exiting FTP Client.
+2025-06-18 10:31:39,676 - INFO - Disconnected to FTP
+2025-06-18 10:33:28,723 - INFO - FTP Client application has started.
+2025-06-18 10:33:49,411 - INFO - Connecting to ClamAV Agent at 127.0.0.1:9001 to scan 'List_of_function.md'...
+2025-06-18 10:33:49,423 - INFO - Virus scan result for 'List_of_function.md': READY
+2025-06-18 10:33:49,424 - WARNING - Upload of file List_of_function.md canceled due to virus: Bad file..
+2025-06-18 10:35:53,935 - INFO - Exiting FTP Client.
+2025-06-18 10:35:53,951 - INFO - Disconnected to FTP
+2025-06-18 10:49:51,143 - INFO - FTP Client application has started.
+2025-06-18 10:50:05,508 - INFO - Connecting to ClamAV Agent at 127.0.0.1:9001 to scan 'test.txt'...
+2025-06-18 10:50:05,515 - ERROR - A socket error occurred while connecting to the ClamAV agent: [WinError 10053] An established connection was aborted by the software in your host machine
+2025-06-18 10:50:05,515 - WARNING - Upload of file test.txt canceled due to virus: ERROR_CONNECTION.
+2025-06-18 10:51:00,463 - INFO - Connecting to ClamAV Agent at 127.0.0.1:9001 to scan 'test.txt'...
+2025-06-18 10:51:00,516 - ERROR - A socket error occurred while connecting to the ClamAV agent: [WinError 10053] An established connection was aborted by the software in your host machine
+2025-06-18 10:51:00,516 - WARNING - Upload of file test.txt canceled due to virus: ERROR_CONNECTION.
+2025-06-18 10:51:35,381 - INFO - Exiting FTP Client.
+2025-06-18 10:51:35,381 - INFO - Disconnected to FTP
+2025-06-18 11:46:49,627 - INFO - FTP Client application has started.
+2025-06-18 11:49:58,618 - INFO - Connecting to ClamAV Agent at 127.0.0.1:9001 to scan '24127148_24127514_24127597_24127487.txt'...
+2025-06-18 11:49:58,669 - ERROR - A socket error occurred while connecting to the ClamAV agent: [WinError 10054] An existing connection was forcibly closed by the remote host
+2025-06-18 11:49:58,670 - WARNING - Upload of file D:\OneDrive\Documents\24127148_24127514_24127597_24127487.txt canceled due to virus: ERROR_CONNECTION.
+2025-06-18 11:51:08,807 - INFO - Exiting FTP Client.
+2025-06-18 11:51:08,809 - INFO - Disconnected to FTP
+2025-06-18 11:55:08,216 - INFO - FTP Client application has started.
+2025-06-18 11:55:37,484 - INFO - Connecting to ClamAV Agent at 127.0.0.1:9001 to scan 'test.txt'...
+2025-06-18 11:55:37,505 - INFO - Virus scan result for 'test.txt': READY
+2025-06-18 11:55:37,506 - WARNING - Upload of file test.txt canceled due to virus: Bad file..
+2025-06-18 11:56:39,639 - INFO - Connecting to ClamAV Agent at 127.0.0.1:9001 to scan 'List_of_function.md'...
+2025-06-18 11:56:39,665 - INFO - Virus scan result for 'List_of_function.md': READY
+2025-06-18 11:56:39,666 - WARNING - Upload of file List_of_function.md canceled due to virus: Bad file..
+2025-06-18 12:08:45,378 - INFO - Connecting to ClamAV Agent at 127.0.0.1:9001 to scan 'test.txt'...
+2025-06-18 12:08:45,380 - INFO - Virus scan result for 'test.txt': READY
+2025-06-18 12:08:45,382 - WARNING - Upload of file test.txt canceled due to virus: Bad file..
+2025-06-18 12:13:00,457 - INFO - Exiting FTP Client.
+2025-06-18 12:13:00,457 - INFO - Disconnected to FTP
+2025-06-18 12:50:03,918 - INFO - FTP Client application has started.
+2025-06-18 12:50:24,614 - ERROR - Error connected to 127.0.0.1:21: 530 Login incorrect.
+2025-06-18 12:51:20,387 - INFO - Connecting to ClamAV Agent at 127.0.0.1:9001 to scan 'test.txt'...
+2025-06-18 12:51:22,432 - ERROR - A socket error occurred while connecting to the ClamAV agent: [WinError 10061] No connection could be made because the target machine actively refused it
+2025-06-18 12:51:22,433 - WARNING - Upload of file test.txt canceled due to virus: ERROR_CONNECTION.
+2025-06-18 12:51:43,688 - INFO - Connecting to ClamAV Agent at 127.0.0.1:9001 to scan 'test.txt'...
+2025-06-18 12:51:43,708 - INFO - Virus scan result for 'test.txt': READY
+2025-06-18 12:51:43,708 - WARNING - Upload of file test.txt canceled due to virus: Bad file..
+2025-06-18 12:53:27,816 - INFO - Connecting to ClamAV Agent at 127.0.0.1:9001 to scan 'utils.py'...
+2025-06-18 12:53:27,841 - ERROR - A socket error occurred while connecting to the ClamAV agent: [WinError 10054] An existing connection was forcibly closed by the remote host
+2025-06-18 12:53:27,841 - WARNING - Upload of file utils.py canceled due to virus: ERROR_CONNECTION.
+2025-06-18 12:53:38,975 - INFO - Exiting FTP Client.
+2025-06-18 12:53:38,977 - INFO - Disconnected to FTP
+2025-06-18 13:06:58,072 - INFO - FTP Client application has started.
+2025-06-18 13:07:07,793 - ERROR - Error connected to 127.0.0.1:21: 530 Login incorrect.
+2025-06-18 13:07:58,330 - INFO - Connecting to ClamAV Agent at 127.0.0.1:9001 to scan 'test.txt'...
+2025-06-18 13:08:13,793 - INFO - Virus scan result for 'test.txt': OK
+2025-06-18 13:08:13,794 - INFO - Uploading test.txt to test.txt(binary)...
+2025-06-18 13:08:13,815 - INFO - Successfully uploaded test.txt to test.txt
+2025-06-18 13:08:26,010 - INFO - Exiting FTP Client.
+2025-06-18 13:08:26,010 - INFO - Disconnected to FTP
