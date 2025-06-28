@@ -14,9 +14,17 @@ pip install -r requirements-test.txt
 
 ## Chạy tất cả tests
 
+**⚠️ Lưu ý đường dẫn**: Luôn chạy từ thư mục root project `Socket-FTP-Programming-/`
+
 ```bash
-# Chạy tất cả tests (29 tests)
+# 1. CD vào thư mục project trước
+cd "Socket-FTP-Programming-"
+
+# 2. Chạy tất cả tests (29 tests)
 pytest
+
+# Hoặc chỉ định thư mục tests cụ thể
+pytest tests/
 
 # Chạy với coverage report
 pytest --cov=Client --cov=ClamAvAgent
