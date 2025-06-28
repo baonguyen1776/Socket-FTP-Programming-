@@ -91,3 +91,34 @@
 2025-06-18 13:08:13,815 - INFO - Successfully uploaded test.txt to test.txt
 2025-06-18 13:08:26,010 - INFO - Exiting FTP Client.
 2025-06-18 13:08:26,010 - INFO - Disconnected to FTP
+2025-06-28 21:22:50,212 - INFO - FTP Client application has started.
+2025-06-28 21:25:38,256 - INFO - FTP Client application has started.
+2025-06-28 21:26:21,116 - INFO - FTP Client application has started.
+2025-06-28 21:26:54,126 - INFO - Downloading test.txt to test.txt (binary)...
+2025-06-28 21:26:54,129 - ERROR - Error while downloading file test.txt: 550 Couldn't open the file
+2025-06-28 21:26:54,131 - WARNING - Removed incomplete local file at test.txt
+2025-06-28 21:28:55,853 - ERROR - Error: Not a file: D:\projectMMT
+2025-06-28 21:28:55,853 - WARNING - Upload of file D:\projectMMT canceled due to virus: ERROR_NOTFILE.
+2025-06-28 21:30:47,206 - INFO - Connecting to ClamAV Agent at 127.0.0.1:9001 to scan 'testfile.txt'...
+2025-06-28 21:31:04,142 - INFO - Virus scan result for 'testfile.txt': OK
+2025-06-28 21:31:04,142 - INFO - Uploading D:\projectMMT\testfile.txt to testfile.txt(binary)...
+2025-06-28 21:31:04,147 - INFO - Successfully uploaded D:\projectMMT\testfile.txt to testfile.txt
+2025-06-28 21:31:48,204 - INFO - Downloading testfile.txt to testfile.txt (binary)...
+2025-06-28 21:31:48,225 - INFO - Successfully downloaded testfile.txt to testfile.txt
+2025-06-28 21:33:31,526 - INFO - Connecting to ClamAV Agent at 127.0.0.1:9001 to scan 'hokthuc.txt'...
+2025-06-28 21:33:47,588 - INFO - Virus scan result for 'hokthuc.txt': OK
+2025-06-28 21:33:47,588 - INFO - Uploading D:\OOP\trenlp\hokthuc.txt to hokthuc.txt(binary)...
+2025-06-28 21:33:47,606 - INFO - Successfully uploaded D:\OOP\trenlp\hokthuc.txt to hokthuc.txt
+2025-06-28 21:33:57,737 - INFO - Downloading hokthuc.txt to hokthuc.txt (binary)...
+2025-06-28 21:33:57,759 - INFO - Successfully downloaded hokthuc.txt to hokthuc.txt
+2025-06-28 21:41:54,517 - INFO - Downloading hokthuc.txt to hokthuc.txt (binary)...
+2025-06-28 21:41:54,521 - INFO - Successfully downloaded hokthuc.txt to hokthuc.txt
+2025-06-28 21:49:15,882 - INFO - Downloading testfile.txt to testfile.txt (binary)...
+2025-06-28 21:49:15,905 - INFO - Successfully downloaded testfile.txt to testfile.txt
+2025-06-28 21:57:15,542 - INFO - Exiting FTP Client.
+2025-06-28 21:57:15,544 - INFO - Disconnected to FTP
+2025-06-28 22:03:37,025 - INFO - FTP Client application has started.
+2025-06-28 22:04:12,021 - INFO - Downloading testfile.txt to D:\GitHub\Socket-FTP-Programming-\Client\downloads\testfile.txt (binary)...
+2025-06-28 22:04:12,036 - INFO - Successfully downloaded testfile.txt to D:\GitHub\Socket-FTP-Programming-\Client\downloads\testfile.txt
+2025-06-28 22:05:41,796 - INFO - Exiting FTP Client.
+2025-06-28 22:05:41,798 - INFO - Disconnected to FTP

@@ -161,7 +161,7 @@ class FTPCommands(cmd.Cmd):
 
         os.makedirs(Config.DOWNLOAD_DIR, exist_ok=True)
 
-        if self.ftp_helpers._download_file(remote_file, local_file, self.transfer_mode):
+        if self.ftp_helpers._download_file(remote_file, local_path, self.transfer_mode):
             print(f"Successfully downloaded {remote_file} to {local_path}")
         else: 
             print(f"Cannot download file {remote_file}")
