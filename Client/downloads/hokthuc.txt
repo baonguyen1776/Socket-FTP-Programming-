@@ -1,3 +1,0 @@
-1 class được tạo bởi attributes(thuộc tính), behaviors(hành vi)      dsfdsafffffffffffffffdsffffffffffffffffffffffffffffffffff                                                                                   
-visibility(tính khả kiến) private, public, protected
-class diagram: 1 phầnor 3 phần nếu 3 phần thì bắt buộc 

@@ -1,2 +1,0 @@
-# Test files for integration testing
-This is a clean test file for FTP upload/download testing.

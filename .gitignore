@@ -1,26 +1,22 @@
-# Python
+# Python cache
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
 
-# Pytest
-.pytest_cache/
-.coverage
-htmlcov/
-
-# Logs
+# Log files
 *.log
-ftp_client.log
+Client/ftp_client.log
 
-# Temporary files
-temp_*/
-debug_test.py
-
-# IDE
+# IDE/editor config
 .vscode/
 .idea/
 
-# OS
+# Virtual environments
+env/
+venv/
+
+# OS system files
 .DS_Store
 Thumbs.db
+
+# Temporary folders
+downloads/
