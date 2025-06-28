@@ -12,6 +12,7 @@ htmlcov/
 # Logs
 *.log
 ftp_client.log
+logs/
 
 # Temporary files
 temp_*/
