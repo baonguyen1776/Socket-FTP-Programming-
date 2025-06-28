@@ -122,3 +122,12 @@
 2025-06-28 22:04:12,036 - INFO - Successfully downloaded testfile.txt to D:\GitHub\Socket-FTP-Programming-\Client\downloads\testfile.txt
 2025-06-28 22:05:41,796 - INFO - Exiting FTP Client.
 2025-06-28 22:05:41,798 - INFO - Disconnected to FTP
+2025-06-28 22:31:58,515 - INFO - FTP Client application has started.
+2025-06-28 22:34:14,559 - INFO - Downloading testfile.txt to D:\GitHub\Socket-FTP-Programming-\Client\downloads\testfile.txt (binary)...
+2025-06-28 22:34:14,562 - INFO - Successfully downloaded testfile.txt to D:\GitHub\Socket-FTP-Programming-\Client\downloads\testfile.txt
+2025-06-28 22:36:08,320 - INFO - Downloading hokthuc.txt to D:\GitHub\Socket-FTP-Programming-\Client\downloads\hokthuc.txt (binary)...
+2025-06-28 22:36:08,342 - INFO - Successfully downloaded hokthuc.txt to D:\GitHub\Socket-FTP-Programming-\Client\downloads\hokthuc.txt
+2025-06-28 22:36:18,715 - INFO - Downloading testfile.txt to D:\GitHub\Socket-FTP-Programming-\Client\downloads\testfile.txt (binary)...
+2025-06-28 22:36:18,741 - INFO - Successfully downloaded testfile.txt to D:\GitHub\Socket-FTP-Programming-\Client\downloads\testfile.txt
+2025-06-28 22:36:33,904 - INFO - Exiting FTP Client.
+2025-06-28 22:36:33,905 - INFO - Disconnected to FTP
