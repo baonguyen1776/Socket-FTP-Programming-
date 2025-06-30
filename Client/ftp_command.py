@@ -269,7 +269,7 @@ class FTPCommands(cmd.Cmd):
             if os.path.isfile(local_file):
                 confirm = 'y'
                 if self.prompt_on_mget_mput:
-                    confirm - input(f"Download {local_file}? (y/n/a): ").lower().strip()
+                    confirm = input(f"Upload {local_file}? (y/n/a): ").lower().strip()
                     if confirm == 'a':
                         self.prompt_on_mget_mput = False
                         confirm = 'y'
@@ -295,7 +295,7 @@ class FTPCommands(cmd.Cmd):
             print("No clean files available for upload.")
             return
         
-        print("Downloading clean file...")
+        print("Uploading clean files...")
         for local_file in clean_files:
             remote_file = os.path.basename(local_file)
             if self.ftp_helpers._upload_file(local_file, remote_file, self.transfer_mode):
