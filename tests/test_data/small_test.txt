@@ -1,0 +1,4 @@
+This is a small test file for FTP testing.
+It contains simple text content.
+Line 3 of the test file.
+End of small test file.

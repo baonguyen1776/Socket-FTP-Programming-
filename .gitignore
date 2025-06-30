@@ -1,27 +1,73 @@
 # Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# Pytest
-.pytest_cache/
-.coverage
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
 htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
 
-# Logs
-*.log
-ftp_client.log
-logs/
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
-# Temporary files
-temp_*/
-debug_test.py
-
-# IDE
+# IDEs
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
 
-# OS
+# OS generated files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+
+# Project specific
+*.log
+test_results*.txt
+downloads/
+temp_*/
+
+# FTP Client specific
+ftp_client.log
+clam_av_agent.log

@@ -18,5 +18,3 @@ class Config:
 
     # Cấu hình khác
     DOWNLOAD_DIR = os.path.join(os.getcwd(), 'downloads') # Thư mục mặc định để tải xuống
-
-
