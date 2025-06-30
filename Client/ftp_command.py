@@ -268,13 +268,17 @@ class FTPCommands(cmd.Cmd):
         for local_file in local_files:
             if os.path.isfile(local_file):
                 confirm = 'y'
-                if self.prompt_on_mget_mput:
-                    confirm = input(f"Upload {local_file}? (y/n/a): ").lower().strip()
-                    if confirm == 'a':
-                        self.prompt_on_mget_mput = False
-                        confirm = 'y'
-                elif confirm != 'y':
-                    files_to_upload.append(local_file)
+            if self.prompt_on_mget_mput:
+                confirm = input(f"Upload {local_file}? (y/n/a): ").lower().strip()
+            if confirm == 'a':
+                self.prompt_on_mget_mput = False
+                confirm = 'y'
+        # luôn check confirm == 'y' ở đây, bất kể có prompt hay không
+            if confirm == 'y':
+                files_to_upload.append(local_file)
+            else:
+                print(f"Skipped {local_file}.")
+
 
         if not files_to_upload:
             print("No files selected for upload.")
