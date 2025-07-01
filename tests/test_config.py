@@ -8,8 +8,8 @@ class TestConfig:
     # FTP Server Configuration  
     FTP_HOST = '127.0.0.1'  # Sync with Client/config.py
     FTP_PORT = 21
-    FTP_USERNAME = 'ftpuser'  # Can be customized for different users
-    FTP_PASSWORD = '12345'    # Can be customized for different users
+    FTP_USERNAME = None  # Will be prompted
+    FTP_PASSWORD = None  # Will be prompted
     
     # ClamAV Agent Configuration  
     CLAMAV_HOST = '127.0.0.1'
@@ -31,9 +31,20 @@ class TestConfig:
     
     @classmethod
     def get_credentials(cls):
-        """Get FTP credentials - can be overridden by environment variables"""
-        username = os.getenv('FTP_TEST_USER', cls.FTP_USERNAME)
-        password = os.getenv('FTP_TEST_PASS', cls.FTP_PASSWORD)
+        """Get FTP credentials from environment variables only"""
+        username = os.getenv('FTP_TEST_USER')
+        password = os.getenv('FTP_TEST_PASS')
+        
+        if not username or not password:
+            raise ValueError(
+                "Environment variables FTP_TEST_USER and FTP_TEST_PASS must be set.\n"
+                "Example:\n"
+                "  $env:FTP_TEST_USER=\"your_username\"\n"
+                "  $env:FTP_TEST_PASS=\"your_password\""
+            )
+        
+        cls.FTP_USERNAME = username
+        cls.FTP_PASSWORD = password
         return username, password
     
     @classmethod

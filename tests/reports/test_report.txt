@@ -1,0 +1,83 @@
+============================================================
+FTP CLIENT TEST REPORT
+============================================================
+Generated: 2025-07-02 00:11:32
+
+PYTEST OUTPUT:
+----------------------------------------
+============================= test session starts =============================
+platform win32 -- Python 3.13.5, pytest-8.4.1, pluggy-1.6.0 -- C:\Users\nguye\AppData\Local\Programs\Python\Python313\python.exe
+cachedir: .pytest_cache
+metadata: {'Python': '3.13.5', 'Platform': 'Windows-11-10.0.26100-SP0', 'Packages': {'pytest': '8.4.1', 'pluggy': '1.6.0'}, 'Plugins': {'html': '4.1.1', 'metadata': '3.1.1', 'timeout': '2.4.0'}}
+rootdir: C:\Users\nguye\OneDrive - VNU-HCMUS\Năm 1\Học kì 3\Mạng pc\projectSocket\Socket-FTP-Programming-\tests
+configfile: pytest.ini
+testpaths: .
+plugins: html-4.1.1, metadata-3.1.1, timeout-2.4.0
+collecting ... collected 49 items
+
+test_directory.py::test_directory_imports PASSED                         [  2%]
+test_directory.py::test_local_directory_operations PASSED                [  4%]
+test_directory.py::test_directory_listing_simulation PASSED              [  6%]
+test_directory.py::test_directory_navigation PASSED                      [  8%]
+test_directory.py::test_directory_creation_deletion PASSED               [ 10%]
+test_directory.py::test_real_directory_operations PASSED                 [ 12%]
+test_directory.py::test_directory_name_validation[test_dir-True] PASSED  [ 14%]
+test_directory.py::test_directory_name_validation[valid-directory-True] PASSED [ 16%]
+test_directory.py::test_directory_name_validation[-False] PASSED         [ 18%]
+test_directory.py::test_directory_name_validation[dir with spaces-True] PASSED [ 20%]
+test_directory.py::test_directory_name_validation[dir/with/slashes-False] PASSED [ 22%]
+test_directory.py::test_directory_name_validation[con-False] PASSED      [ 24%]
+test_directory.py::test_directory_permissions PASSED                     [ 26%]
+test_file.py::test_file_operations_imports PASSED                        [ 28%]
+test_file.py::test_file_size_check PASSED                                [ 30%]
+test_file.py::test_file_existence_check PASSED                           [ 32%]
+test_file.py::test_local_file_operations PASSED                          [ 34%]
+test_file.py::test_file_upload_simulation PASSED                         [ 36%]
+test_file.py::test_file_download_simulation PASSED                       [ 38%]
+test_file.py::test_real_file_operations PASSED                           [ 40%]
+test_file.py::test_filename_validation[test.txt-True] PASSED             [ 42%]
+test_file.py::test_filename_validation[test_file.log-True] PASSED        [ 44%]
+test_file.py::test_filename_validation[-False] PASSED                    [ 46%]
+test_file.py::test_filename_validation[con.txt-False] PASSED             [ 48%]
+test_file.py::test_filename_validation[file with spaces.txt-True] PASSED [ 51%]
+test_file.py::test_filename_validation[file/with/slashes.txt-False] PASSED [ 53%]
+test_file.py::test_file_operations_error_handling PASSED                 [ 55%]
+test_local.py::TestLocalOperations::test_client_creation PASSED          [ 57%]
+test_local.py::TestLocalOperations::test_current_directory_check PASSED  [ 59%]
+test_local.py::TestLocalOperations::test_temp_directory_creation PASSED  [ 61%]
+test_local.py::TestLocalOperations::test_lcd_command_basic PASSED        [ 63%]
+test_local.py::TestLocalOperations::test_lcd_relative_path PASSED        [ 65%]
+test_local.py::TestLocalOperations::test_lcd_error_handling PASSED       [ 67%]
+test_local.py::TestLocalOperations::test_lcd_empty_argument PASSED       [ 69%]
+test_local.py::TestLocalOperations::test_lcd_absolute_path PASSED        [ 71%]
+test_local.py::TestLocalOperations::test_lcd_path_with_spaces PASSED     [ 73%]
+test_local.py::test_lcd_directory_tracking PASSED                        [ 75%]
+test_local.py::test_lcd_integration_workflow PASSED                      [ 77%]
+test_session.py::test_ftp_imports PASSED                                 [ 79%]
+test_session.py::test_ftp_client_initialization PASSED                   [ 81%]
+test_session.py::test_session_mock_connection PASSED                     [ 83%]
+test_session.py::test_real_ftp_connection_quick PASSED                   [ 85%]
+test_session.py::test_session_timeout_handling PASSED                    [ 87%]
+test_session.py::test_session_error_handling PASSED                      [ 89%]
+test_session.py::test_connection_parameters[127.0.0.1-21-True] PASSED    [ 91%]
+test_session.py::test_connection_parameters[localhost-21-True] PASSED    [ 93%]
+test_session.py::test_connection_parameters[invalid_host-21-False] PASSED [ 95%]
+test_session.py::test_connection_parameters[127.0.0.1-9999-False] PASSED [ 97%]
+test_session.py::test_ftp_login_with_credentials PASSED                  [100%]
+
+============================ slowest 10 durations =============================
+2.71s call     test_session.py::test_connection_parameters[invalid_host-21-False]
+1.01s call     test_session.py::test_connection_parameters[127.0.0.1-9999-False]
+0.10s call     test_session.py::test_session_timeout_handling
+0.03s call     test_directory.py::test_directory_creation_deletion
+0.03s call     test_session.py::test_ftp_login_with_credentials
+0.02s setup    test_session.py::test_real_ftp_connection_quick
+0.02s call     test_session.py::test_connection_parameters[localhost-21-True]
+0.02s setup    test_file.py::test_real_file_operations
+0.01s call     test_directory.py::test_directory_imports
+0.00s call     test_file.py::test_file_upload_simulation
+============================= 49 passed in 4.14s ==============================
+
+
+EXIT CODE: 0
+============================================================
