@@ -1,0 +1,4 @@
+EICAR-TEST-FILE-SAFE-VERSION
+This is a safe version of the EICAR test file.
+It contains the pattern but is not the actual EICAR string.
+Use this for testing virus scanning functionality safely.
