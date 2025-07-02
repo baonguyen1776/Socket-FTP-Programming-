@@ -27,6 +27,5 @@ __all__ = [
     'test_file', 
     'test_directory',
     'test_local',
-    'test_config_validation',
-    'validate_test_data'
+    'test_config_validation'
 ]

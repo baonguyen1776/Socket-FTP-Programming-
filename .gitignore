@@ -53,6 +53,19 @@ venv.bak/
 *.swo
 *~
 
+# Backup và temporary files
+*.bak
+*.tmp
+*.temp
+*_backup
+*_backup.*
+fixed_*
+temp_*
+
+# OneDrive temporary files
+*.onedrive
+*-OneDrive
+
 # OS generated files
 .DS_Store
 .DS_Store?

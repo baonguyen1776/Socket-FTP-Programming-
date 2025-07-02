@@ -8,6 +8,7 @@ import tempfile
 import shutil
 from pathlib import Path
 import pytest
+from collections import defaultdict
 
 # Add paths for imports
 current_dir = Path(__file__).parent
@@ -38,6 +39,8 @@ def ftp_client():
     try:
         from ftp_command import FTPCommands
         client = FTPCommands()
+        # Tắt prompt trong môi trường test để tránh lỗi stdin capture
+        client.prompt_on_mget_mput = False
         yield client
         # Cleanup: disconnect if connected
         try:
@@ -85,30 +88,6 @@ def mock_large_file():
         'content_sample': 'This would be a large file content...',
         'mock': True
     }
-
-
-@pytest.fixture(scope="function") 
-def test_files():
-    """Provide test files with size info"""
-    test_data_dir = Path(__file__).parent / "test_data"
-    
-    files = {
-        'small': test_data_dir / "small_test.txt",
-        'large': test_data_dir / "large_test.txt", 
-        'virus': test_data_dir / "eicar_test.txt",
-        'virus_safe': test_data_dir / "eicar_safe.txt"
-    }
-    
-    # Create small test file if not exists
-    if not files['small'].exists():
-        files['small'].write_text("Small test file content for FTP testing.")
-    
-    # Create moderate "large" file if not exists (not actually large to avoid issues)
-    if not files['large'].exists():
-        content = "Large test file content.\n" * 100  # Just 2-3KB, not truly large
-        files['large'].write_text(content)
-    
-    return files
 
 
 @pytest.fixture(scope="function")
@@ -174,9 +153,6 @@ def setup_test_environment():
     # Store original working directory
     original_cwd = os.getcwd()
     
-    # Ensure test data directory exists
-    os.makedirs(TestConfig.TEST_DATA_DIR, exist_ok=True)
-    
     yield
     
     # Restore original working directory
@@ -216,6 +192,31 @@ def pytest_runtest_setup(item):
     if "clamav" in item.keywords:
         if not check_clamav_server_available():
             pytest.skip("ClamAV server not available")
+    
+    # Skip integration tests if credentials not set
+    if "integration" in item.keywords:
+        if not check_credentials_available():
+            pytest.skip("FTP credentials not set. Set FTP_TEST_USER and FTP_TEST_PASS environment variables")
+
+
+def check_credentials_available():
+    """Check if FTP credentials are available and valid"""
+    import os
+    username = os.getenv('FTP_TEST_USER')
+    password = os.getenv('FTP_TEST_PASS')
+    
+    # Check if credentials exist
+    if not username or not password:
+        return False
+    
+    # Check if credentials are not just dummy values
+    if username.lower() in ['test', 'user', 'admin', 'ftp'] and len(username) < 5:
+        return False
+    
+    if password.lower() in ['test', 'pass', 'password', '123'] and len(password) < 5:
+        return False
+    
+    return True
 
 
 def check_ftp_server_available():
@@ -241,3 +242,99 @@ def check_clamav_server_available():
         return result == 0
     except:
         return False
+
+
+@pytest.fixture(scope="function")
+def ftp_cleanup_tracker():
+    """Track and cleanup files/directories created on FTP server during tests"""
+    class FTPCleanupTracker:
+        def __init__(self):
+            self.files_to_delete = []
+            self.dirs_to_delete = []
+        
+        def add_file(self, path):
+            """Add a file path to be cleaned up after the test"""
+            self.files_to_delete.append(path)
+            
+        def add_directory(self, path):
+            """Add a directory path to be cleaned up after the test"""
+            self.dirs_to_delete.append(path)
+            
+        def cleanup(self, ftp_client):
+            """Clean up all tracked files and directories"""
+            if not hasattr(ftp_client, 'ftp') or ftp_client.ftp is None:
+                return
+                
+            # Remember original directory
+            try:
+                original_dir = ftp_client.ftp.pwd()
+            except:
+                original_dir = "/"
+                
+            # Delete files first
+            failed_files = []
+            for file_path in self.files_to_delete:
+                try:
+                    ftp_client.do_delete(file_path)
+                    print(f"Deleted remote file: {file_path}")
+                except Exception as e:
+                    failed_files.append((file_path, str(e)))
+            
+            # Then delete directories (in reverse order to handle nested dirs)
+            failed_dirs = []
+            for dir_path in reversed(self.dirs_to_delete):
+                try:
+                    # Ensure we're not in the directory we're trying to delete
+                    ftp_client.do_cd("/")
+                    
+                    # Check if directory has files and delete them first
+                    try:
+                        ftp_client.do_cd(dir_path)
+                        files = ftp_client.ftp.nlst()
+                        for file in files:
+                            if file not in ['.', '..']:
+                                try:
+                                    ftp_client.do_delete(file)
+                                except:
+                                    pass
+                        ftp_client.do_cd("/")
+                    except:
+                        pass
+                    
+                    ftp_client.do_rmdir(dir_path)
+                    print(f"Deleted remote directory: {dir_path}")
+                except Exception as e:
+                    failed_dirs.append((dir_path, str(e)))
+            
+            # Report failures
+            if failed_files or failed_dirs:
+                print("\nWARNING: Some FTP cleanup operations failed:")
+                for path, err in failed_files:
+                    print(f"- Could not delete file {path}: {err}")
+                for path, err in failed_dirs:
+                    print(f"- Could not delete directory {path}: {err}")
+            
+            # Return to original directory
+            try:
+                ftp_client.do_cd(original_dir)
+            except:
+                pass
+    
+    tracker = FTPCleanupTracker()
+    yield tracker
+
+
+@pytest.fixture(scope="function")
+def ftp_client_with_cleanup(ftp_client, ftp_cleanup_tracker):
+    """Create FTP client instance with automatic cleanup of remote files"""
+    # Tắt prompt trong môi trường test để tránh lỗi stdin capture
+    original_prompt_setting = ftp_client.prompt_on_mget_mput
+    ftp_client.prompt_on_mget_mput = False
+    
+    try:
+        yield ftp_client, ftp_cleanup_tracker
+    finally:
+        # Khôi phục setting ban đầu
+        ftp_client.prompt_on_mget_mput = original_prompt_setting
+        # Cleanup tracked FTP resources
+        ftp_cleanup_tracker.cleanup(ftp_client)

@@ -97,6 +97,8 @@ class FTPCommands(cmd.Cmd):
         if remote_dir:
             self.current_ftp_dir = remote_dir
             print(f"Current directory on FTP server: {self.current_ftp_dir}")
+            return self.current_ftp_dir
+        return None
     
     def do_mkdir(self, args): # Tạo thư mục mới trên FTP server tại đường dẫn chỉ định.
         """mkdir: Tạo thư mục mới trên FTP server.
@@ -402,9 +404,16 @@ class FTPCommands(cmd.Cmd):
             self.ftp = FTP()
             self.ftp.connect(host, port, timeout=60)
 
-            # Nhập username and pasword
-            user = input(f"User ({host}): ")
-            password = input(f"Password: ")
+            # Kiểm tra biến môi trường trước khi yêu cầu nhập
+            import os
+            user = os.environ.get('FTP_TEST_USER')
+            password = os.environ.get('FTP_TEST_PASS')
+            
+            # Nếu không tìm thấy biến môi trường, yêu cầu người dùng nhập
+            if not user:
+                user = input(f"User ({host}): ")
+            if not password:
+                password = input(f"Password: ")
 
             login_resp = self.ftp.login(user, password)
             print(login_resp)
@@ -467,6 +476,34 @@ class FTPCommands(cmd.Cmd):
         except OSError as e:
             print(f"Error: Unable to change local directory: {e}")
             Utils.log_event(f"Error: Unable to change local directory: {e}", level=logging.ERROR)
+    
+    def do_lpwd(self, args): # Hiển thị thư mục làm việc hiện tại của máy cục bộ.
+        """lpwd: Hiển thị thư mục làm việc hiện tại của máy cục bộ.
+        Sử dụng: lpwd
+        """
+        self.current_local_dir = os.getcwd()
+        print(f"Local directory: {self.current_local_dir}")
+        return self.current_local_dir
+    
+    def do_lls(self, args): # Liệt kê các file và thư mục trong thư mục hiện tại của máy cục bộ.
+        """lls: Liệt kê các file và thư mục trong thư mục hiện tại của máy cục bộ.
+        Sử dụng: lls [đường_dẫn]
+        Nếu không có đối số, liệt kê thư mục hiện tại.
+        """
+        path = args if args else '.'
+        try:
+            files = os.listdir(path)
+            for file in files:
+                full_path = os.path.join(path, file)
+                if os.path.isdir(full_path):
+                    print(f"<DIR> {file}")
+                else:
+                    size = os.path.getsize(full_path)
+                    print(f"{size:>10} {file}")
+            print(f"Total: {len(files)} items")
+        except OSError as e:
+            print(f"Error: Unable to list directory: {e}")
+            Utils.log_event(f"Error: Unable to list directory: {e}", level=logging.ERROR)
     
     def _recursive_upload(self, local_path, remote_path): # Hàm hỗ trợ tải lên thư mục đệ quy
         try:
