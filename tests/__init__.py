@@ -1,24 +1,24 @@
 """
-FTP Client Test Suite Package - Pytest Edition
+Gói Test Suite cho FTP Client - Phiên bản Pytest
 
-Modern test suite using pytest with better features:
-- Automatic fixtures and setup/teardown
-- Timeout protection to prevent hanging
-- Marker-based test categorization  
-- HTML reporting and better output
-- Mock testing for offline development
+Test suite hiện đại sử dụng pytest với các tính năng tốt hơn:
+- Fixtures tự động và setup/teardown
+- Bảo vệ timeout để ngăn chặn treo
+- Phân loại test dựa trên marker  
+- Báo cáo HTML và output tốt hơn
+- Mock testing cho phát triển offline
 
-Usage:
-    python test_runner.py           # Interactive menu
-    python -m pytest -m unit       # Quick unit tests
-    python -m pytest -v            # All tests with verbose output
-    python test.py quick           # Shortcut for quick tests
+Cách sử dụng:
+    python test_runner.py           # Menu tương tác
+    python -m pytest -m unit       # Unit tests nhanh
+    python -m pytest -v            # Tất cả tests với output chi tiết
+    python test.py quick           # Shortcut cho quick tests
 """
 
 __version__ = "3.0.0-pytest"
 __author__ = "FTP Client Test Team"
 
-# Import test configuration for easy access
+# Import cấu hình test để truy cập dễ dàng
 from .test_config import TestConfig
 
 __all__ = [

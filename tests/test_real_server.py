@@ -38,8 +38,8 @@ if client_path not in sys.path:
 
 import os
 from test_config import TestConfig
-from ftp_command import FTPCommands
-from ftp_helpers import FTPHelpers
+from Client.ftp_command import FTPCommands
+from Client.ftp_helpers import FTPHelpers
 
 # Kiểm tra biến môi trường FTP_TEST_USER và FTP_TEST_PASS
 ftp_user = os.environ.get('FTP_TEST_USER')

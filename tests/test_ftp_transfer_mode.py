@@ -1,28 +1,45 @@
 """
-Test FTP active/passive mode switching
+Test chuyển đổi giữa chế độ active/passive của FTP
 """
 
 import pytest
 import os
 import sys
+import time
+import tempfile
 from pathlib import Path
 
-# Add Client directory to path
+# Thêm thư mục Client vào path
 sys.path.insert(0, str(Path(__file__).parent.parent / "Client"))
 
 from test_config import TestConfig
-from ftp_command import FTPCommands
-from ftp_helpers import FTPHelpers
 
-# Reuse fixtures from test_real_server.py
-from test_real_server import ftp_client, has_credentials
+# Import functions để kiểm tra credentials
+def has_credentials():
+    """Kiểm tra nếu đã có thông tin đăng nhập FTP"""
+    ftp_user = os.environ.get('FTP_TEST_USER')
+    ftp_pass = os.environ.get('FTP_TEST_PASS')
+    return ftp_user is not None and ftp_pass is not None
 
 
 @pytest.mark.integration
 @pytest.mark.real_server
 @pytest.mark.timeout(30)
 def test_passive_active_mode(ftp_client):
-    """Test switching between passive and active modes"""
+    """Test chuyển đổi giữa chế độ passive và active"""
+    # Thiết lập credentials nếu chưa kết nối
+    if not ftp_client.ftp:
+        if not has_credentials():
+            pytest.skip("FTP credentials not set")
+        
+        ftp_user = os.environ.get('FTP_TEST_USER')
+        ftp_pass = os.environ.get('FTP_TEST_PASS')
+        TestConfig.FTP_USER = ftp_user
+        TestConfig.FTP_PASS = ftp_pass
+        
+        host, port = TestConfig.get_ftp_config()
+        ftp_client.do_open(f"{host} {port}")
+    
     try:
         # Lưu trạng thái passive ban đầu
         original_mode = ftp_client.passive_mode
@@ -36,7 +53,7 @@ def test_passive_active_mode(ftp_client):
             ftp_client.do_ls("")
             print("Passive mode listing successful")
             
-            # Lưu trạng thái passive
+            # Chuyển sang active mode
             ftp_client.passive_mode = False
             assert ftp_client.passive_mode == False, "Failed to switch to active mode"
             
@@ -61,7 +78,7 @@ def test_passive_active_mode(ftp_client):
             print("Mode switching test passed!")
             
         finally:
-            # Restore original mode
+            # Khôi phục chế độ ban đầu
             ftp_client.passive_mode = original_mode
             
     except Exception as e:

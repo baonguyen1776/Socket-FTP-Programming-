@@ -13,8 +13,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "Client"))
 
 from test_config import TestConfig
-from ftp_command import FTPCommands
-from ftp_helpers import FTPHelpers
+from Client.ftp_command import FTPCommands
+from Client.ftp_helpers import FTPHelpers
 
 # Reuse fixtures from test_real_server.py
 from test_real_server import ftp_client, has_credentials

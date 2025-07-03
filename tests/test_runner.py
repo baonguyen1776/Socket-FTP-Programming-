@@ -9,6 +9,13 @@ import subprocess
 from pathlib import Path
 import datetime
 
+# Chuẩn hóa imports
+project_root = Path(__file__).parent.parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
+from test_config import TestConfig
+
 
 class FTPTestRunner:
     """Test runner với giao diện menu"""
@@ -93,7 +100,7 @@ class FTPTestRunner:
         print("  Running COMPREHENSIVE REAL SERVER Tests")
         print("    Testing all FTP functionality with actual server...")
         
-        # Require credentials for all tests
+        # Yêu cầu credentials cho tất cả tests
         if not self._setup_credentials_if_needed():
             return False
         
@@ -183,15 +190,15 @@ class FTPTestRunner:
         report_dir = self.tests_dir / "reports"
         report_dir.mkdir(exist_ok=True)
         
-        # Check credentials first
+        # Kiểm tra credentials trước
         if not self._setup_credentials_if_needed():
             print("  Cannot generate report without FTP credentials.")
             return False
         
-        # Run pytest and save output to file
+        # Chạy pytest và lưu output vào file
         report_file = report_dir / "ftp_integration_test_report.txt"
         
-        # List all test files to run
+        # Liệt kê tất cả test files để chạy
         test_files = [
             "test_real_server.py",
             "test_ftp_navigation.py",
@@ -210,7 +217,7 @@ class FTPTestRunner:
         cmd = [sys.executable, "-m", "pytest"] + args
         
         try:
-            # Run pytest and capture output
+            # Chạy pytest và capture output
             result = subprocess.run(
                 cmd, 
                 cwd=self.tests_dir, 
@@ -218,7 +225,7 @@ class FTPTestRunner:
                 text=True
             )
             
-            # Create comprehensive text report
+            # Tạo comprehensive text report
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
             with open(report_file, 'w', encoding='utf-8') as f:
@@ -266,7 +273,7 @@ class FTPTestRunner:
         
         import socket
         
-        # Check FTP Server
+        # Kiểm tra FTP Server
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(2)
@@ -280,7 +287,7 @@ class FTPTestRunner:
         except Exception as e:
             print(f"  FTP Server: Check failed - {e}")
         
-        # Check ClamAV Server
+        # Kiểm tra ClamAV Server
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(2)
@@ -294,7 +301,7 @@ class FTPTestRunner:
         except Exception as e:
             print(f"  ClamAV Server: Check failed - {e}")
         
-        # Check environment variables
+        # Kiểm tra biến môi trường
         if os.getenv('FTP_TEST_USER') and os.getenv('FTP_TEST_PASS'):
             print("  FTP Credentials: Environment variables set")
         else:
@@ -305,7 +312,7 @@ class FTPTestRunner:
         print("🔌 Running CONNECTION & BASIC COMMAND Tests")
         print("    Testing: open, close, status, pwd, ls commands...")
         
-        # Require credentials for all tests
+        # Yêu cầu credentials cho tất cả tests
         if not self._setup_credentials_if_needed():
             return False
         
@@ -315,21 +322,22 @@ class FTPTestRunner:
         print("   • status - Check connection status")
         print("   • pwd - Print working directory")
         print("   • ls - List directory contents")
+        print("   • server capabilities - FEAT, SYST commands")
         
+        # Run all connection-related tests (all basic FTP operations)
         args = [
             "test_real_server.py",
             "-v", 
-            "--tb=short",
-            "-k", "test_connection"
+            "--tb=short"
         ]
         return self.run_pytest_command(args)
     
     def run_file_tests(self):
         """Chạy các test thao tác file"""
-        print("   Running FILE OPERATION Tests")
+        print("📁 Running FILE OPERATION Tests")
         print("    Testing: put, get, delete, rename operations...")
         
-        # Require credentials for all tests
+        # Yêu cầu credentials cho tất cả tests
         if not self._setup_credentials_if_needed():
             return False
         
@@ -339,18 +347,19 @@ class FTPTestRunner:
         print("   • delete - Remove files from server")
         print("   • rename - Rename files on server")
         print("   • File integrity validation")
+        print("   • Connection and basic operations")
         
+        # Run all tests in test_real_server.py (includes file operations)
         args = [
             "test_real_server.py",
             "-v", 
-            "--tb=short",
-            "-k", "test_file"
+            "--tb=short"
         ]
         return self.run_pytest_command(args)
     
     def run_directory_tests(self):
         """Chạy các test thao tác thư mục"""
-        print("  Running DIRECTORY OPERATION Tests")
+        print("📂 Running DIRECTORY OPERATION Tests")
         print("    Testing: mkdir, rmdir, cd, ls, cdup operations...")
         
         # Require credentials for all tests
@@ -365,12 +374,12 @@ class FTPTestRunner:
         print("   • cdup - Change to parent directory")
         print("   • pwd - Print working directory")
         
-        # Run directory tests from test_real_server.py
+        # Run all tests from test_real_server.py (includes directory operations)
+        print("\n--- Running Core Directory Tests ---")
         args1 = [
             "test_real_server.py",
             "-v", 
-            "--tb=short",
-            "-k", "test_directory"
+            "--tb=short"
         ]
         
         result1 = self.run_pytest_command(args1)
@@ -389,20 +398,19 @@ class FTPTestRunner:
     
     def run_extended_tests(self):
         """Chạy các test chức năng mở rộng"""
-        print("  Running EXTENDED FUNCTIONALITY Tests")
+        print("🚀 Running EXTENDED FUNCTIONALITY Tests")
         print("    Testing: transfer modes, local ops, multiple files...")
         
         # Require credentials for all tests
         if not self._setup_credentials_if_needed():
             return False
         
-        print("\n--- Running Server Capabilities Tests ---")
-        print("  Functions: FEAT, SYST, server info")
+        print("\n--- Running Core FTP Tests (including server capabilities) ---")
+        print("  Functions: connection, file ops, directory ops, server capabilities")
         args = [
             "test_real_server.py",
             "-v", 
-            "--tb=short",
-            "-k", "test_listing or test_server"
+            "--tb=short"
         ]
         result1 = self.run_pytest_command(args)
         
