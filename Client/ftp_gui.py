@@ -11,7 +11,7 @@ import fnmatch
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from ftplib import FTP, all_errors, error_perm, error_temp, error_proto
-import ftp_command
+from ftp_command import FTPCommands
 from virus_scan import VirusScan
 from ftp_helpers import FTPHelpers
 from utils import Utils
@@ -30,6 +30,7 @@ class FTPClientGUI:
         # Khởi tạo các biến
         if connection_data:
             self.ftp = connection_data['ftp']
+            self.ftp_cmd = FTPCommands(self.ftp)
             self.connected = True
             self.current_remote_dir = self.ftp.pwd() if self.ftp else "/"
             self.passive_mode = connection_data.get('passive_mode', True)
@@ -171,6 +172,7 @@ class FTPClientGUI:
         self.local_tree.configure(yscrollcommand=scroll_local.set)
         
         self.local_tree.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        self.local_tree.bind("<Double-1>", self.on_local_double_click)
         scroll_local.pack(side=tk.RIGHT, fill=tk.Y)
 
         # Local buttons
@@ -194,8 +196,9 @@ class FTPClientGUI:
         
         # Remote path
         self.remote_path_var = tk.StringVar(value=self.current_remote_dir)
-        tk.Label(remote_frame, textvariable=self.remote_path_var, bg='#f0f0f0', 
-                anchor=tk.W, relief=tk.SUNKEN, bd=1, padx=5).pack(fill=tk.X, pady=(0, 5))
+        self.remote_path_entry = tk.Entry(remote_frame, textvariable=self.remote_path_var, relief=tk.SUNKEN)
+        self.remote_path_entry.pack(fill=tk.X, pady=(0, 5))
+        self.remote_path_entry.bind("<Return>", self.on_remote_path_enter)
 
         # Remote treeview
         self.remote_tree = ttk.Treeview(remote_frame, columns=("Size", "Modified"), selectmode=tk.BROWSE)
@@ -318,6 +321,9 @@ class FTPClientGUI:
         """Cập nhật danh sách file local"""
         self.local_tree.delete(*self.local_tree.get_children())
 
+        if os.path.dirname(self.current_local_dir) != self.current_local_dir:
+            self.local_tree.insert("", tk.END, text="📁 /..", values=("", ""))
+
         try:
             for item in os.listdir(self.current_local_dir):
                 item_path = os.path.join(self.current_local_dir, item)
@@ -391,6 +397,9 @@ class FTPClientGUI:
                 self.remote_tree.delete(*self.remote_tree.get_children())
                 files = []
                 self._ftp_cmd(self.ftp.dir, files.append)
+                
+                if self.current_remote_dir not in ("/", ""):
+                    self.remote_tree.insert("", tk.END, text="📁 /..", values=("", ""))
 
                 for line in files:
                     parts = line.split(maxsplit=8)
@@ -485,6 +494,78 @@ class FTPClientGUI:
         """Xóa log"""
         if hasattr(self, "log_text"):
             self.log_text.delete(1.0, tk.END)
+
+    def on_local_double_click(self, event):
+        selected = self.local_tree.selection()
+        if not selected:
+            return
+
+        item = self.local_tree.item(selected[0])
+        name = item['text']
+
+        if name == "📁 /..":
+            self.current_local_dir = os.path.dirname(self.current_local_dir)
+            self.local_path_var.set(self.current_local_dir)
+            self.update_local_files()
+            self.log_message(f"Đã quay lại thư mục cha local: {self.current_local_dir}")
+            return
+
+        if name.startswith("📁 "):
+            folder_name = name.replace("📁 ", "")
+            new_path = os.path.join(self.current_local_dir, folder_name)
+            if os.path.isdir(new_path):
+                self.current_local_dir = new_path
+                self.local_path_var.set(self.current_local_dir)
+                self.update_local_files()
+                self.log_message(f"Đã chuyển vào thư mục local: {self.current_local_dir}")
+
+
+    def on_remote_double_click(self, event):
+        """Xử lý double-click thư mục trong remote_tree"""
+        selected = self.remote_tree.selection()
+        if not selected:
+            return
+
+        item = self.remote_tree.item(selected[0])
+        name = item['text']
+
+        if name == "📁 /..":
+            try:
+                self._ftp_cmd(self.ftp.cwd, "..")
+                self.current_remote_dir = self._ftp_cmd(self.ftp.pwd)
+                self.remote_path_var.set(self.current_remote_dir)
+                self.log_message(f"Đã quay lại thư mục cha: {self.current_remote_dir}")
+                self.update_remote_files()
+            except Exception as e:
+                self.log_message(f"Lỗi khi quay lại thư mục cha: {e}", "ERROR")
+            return
+
+        # Chỉ xử lý nếu là thư mục
+        if not name.startswith("📁 "):
+            return
+
+        folder_name = name.replace("📁 ", "")
+        try:
+            self._ftp_cmd(self.ftp.cwd, folder_name)
+            self.current_remote_dir = self._ftp_cmd(self.ftp.pwd)
+            self.remote_path_var.set(self.current_remote_dir)
+            self.log_message(f"Đã chuyển vào thư mục: {self.current_remote_dir}")
+            self.update_remote_files()
+        except Exception as e:
+            self.log_message(f"Lỗi cd: {str(e)}", "ERROR")
+            messagebox.showerror("Lỗi", f"Không thể chuyển vào thư mục: {folder_name}")
+
+    def on_remote_path_enter(self, event):
+        path = self.remote_path_var.get()
+        try:
+            self._ftp_cmd(self.ftp.cwd, path)
+            self.current_remote_dir = self._ftp_cmd(self.ftp.pwd)
+            self.remote_path_var.set(self.current_remote_dir)
+            self.update_remote_files()
+            self.log_message(f"Đã chuyển đến thư mục: {self.current_remote_dir}")
+        except Exception as e:
+            self.log_message(f"Lỗi khi chuyển đến thư mục: {e}", "ERROR")
+            messagebox.showerror("Lỗi", f"Không thể chuyển đến: {path}")
 
     # ================== Các lệnh FTP ==================
 
@@ -1073,26 +1154,4 @@ class FTPClientGUI:
         self.root.destroy()
         sys.exit(0)
 
-    def on_remote_double_click(self, event):
-        """Xử lý double-click thư mục trong remote_tree"""
-        selected = self.remote_tree.selection()
-        if not selected:
-            return
-
-        item = self.remote_tree.item(selected[0])
-        name = item['text']
-
-        # Chỉ xử lý nếu là thư mục
-        if not name.startswith("📁 "):
-            return
-
-        folder_name = name.replace("📁 ", "")
-        try:
-            self._ftp_cmd(self.ftp.cwd, folder_name)
-            self.current_remote_dir = self._ftp_cmd(self.ftp.pwd)
-            self.remote_path_var.set(self.current_remote_dir)
-            self.log_message(f"Đã chuyển vào thư mục: {self.current_remote_dir}")
-            self.update_remote_files()
-        except Exception as e:
-            self.log_message(f"Lỗi cd: {str(e)}", "ERROR")
-            messagebox.showerror("Lỗi", f"Không thể chuyển vào thư mục: {folder_name}")
+    
