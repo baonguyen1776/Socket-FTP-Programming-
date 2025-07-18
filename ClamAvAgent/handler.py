@@ -7,7 +7,7 @@ from typing import Tuple
 from scanner import ClamAVScanner
 
 BUFFER_SIZE = 4096
-TEMP_DIR = 'temp_scan_file'
+TEMP_DIR = 'temp_scan_files'
 
 class ClientHandler(threading.Thread):
     """Lớp xử lý kết nối từ mỗi client."""
