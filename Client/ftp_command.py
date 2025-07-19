@@ -8,14 +8,15 @@ from virus_scan import VirusScan
 from utils import Utils
 from config import Config
 import logging
+import shlex
 
 class FTPCommands(cmd.Cmd):
     intro = "Welcome to FTP Client. Type 'help' or '?' to view commands.\n"
     prompt = "ftp> "
 
-    def __init__(self):
+    def __init__(self, ftp):
         super().__init__()
-        self.ftp = None
+        self.ftp = ftp
         self.ftp_helpers = None
         self.virus_scanner = VirusScan()
         self.current_local_dir = os.getcwd()
@@ -232,9 +233,16 @@ class FTPCommands(cmd.Cmd):
         if not args: 
             print("Please provide the local file name.")
             return
-        args = args.split()
-        local_file = args[0]
-        remote_file = args[1] if len(args) > 1 else os.path.basename(local_file)
+        
+        # Use shlex to properly handle quoted arguments and special characters
+        try:
+            args_list = shlex.split(args)
+        except ValueError:
+            # Fallback to simple split if shlex fails
+            args_list = args.split()
+            
+        local_file = args_list[0]
+        remote_file = args_list[1] if len(args_list) > 1 else os.path.basename(local_file)
 
         if not os.path.exists(local_file):
             print(f"Error: Local file \'{local_file}\' not exist.")
@@ -402,7 +410,7 @@ class FTPCommands(cmd.Cmd):
         print(f"Connecting {host}:{port}...")
         try: 
             self.ftp = FTP()
-            self.ftp.connect(host, port, timeout=60)
+            self.ftp.connect(host, port, timeout=600)
 
             # Kiểm tra biến môi trường trước khi yêu cầu nhập
             import os
@@ -617,4 +625,35 @@ class FTPCommands(cmd.Cmd):
         self._recursive_download(remote_dir, local_dir)  
         print(f"Download of directory {remote_dir} completed.")
 
-    
+    def dir(self, *args, **kwargs):
+        return self.ftp.dir(*args, **kwargs)
+
+    def pwd(self):
+        return self.ftp.pwd()
+
+    def cwd(self, path):
+        return self.ftp.cwd(path)
+
+    def nlst(self):
+        return self.ftp.nlst()
+
+    def dir(self, *args, **kwargs):
+        return self.ftp.dir(*args, **kwargs)
+
+    def delete(self, filename):
+        return self.ftp.delete(filename)
+
+    def rmd(self, dirname):
+        return self.ftp.rmd(dirname)
+
+    def mkd(self, dirname):
+        return self.ftp.mkd(dirname)
+
+    def rename(self, old, new):
+        return self.ftp.rename(old, new)
+
+    def set_pasv(self, passive):
+        return self.ftp.set_pasv(passive)
+
+    def voidcmd(self, cmd):
+        return self.ftp.voidcmd(cmd)

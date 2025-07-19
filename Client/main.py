@@ -59,6 +59,7 @@ class FTPClientApp:
         """Hiển thị cửa sổ đăng nhập"""
         # Tạo cửa sổ đăng nhập như một Toplevel
         login_root = tk.Toplevel(self.root)
+        login_root.after(100, lambda: login_root.attributes("-alpha", 0.92))
         self.login_window = LoginWindow(login_root, self.on_login_success)
         
     def on_login_success(self, connection_data):
