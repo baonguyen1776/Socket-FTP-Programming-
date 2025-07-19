@@ -36,7 +36,7 @@ class ClamAVAgentServer:
                     client_address = Tuple[str, int]
                     client_socket, client_address = self.server_socket.accept()
 
-                    client_socket.settimeout(60)
+                    client_socket.settimeout(600)
                     handler = ClientHandler(client_socket, client_address, self.scanner)
                     handler.start()
                 except socket.timeout:

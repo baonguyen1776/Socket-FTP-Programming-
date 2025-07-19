@@ -26,7 +26,7 @@ class VirusScan:
 
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-                sock.settimeout(30)
+                sock.settimeout(600)
                 sock.connect((self.agent_host, self.agent_port))
 
                 # 1. Gửi độ dài tên file (4 bytes, network byte order)
