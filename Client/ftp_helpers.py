@@ -1,4 +1,4 @@
-from ftplib import FTP 
+from custom_ftp import FTP 
 import os
 from utils import Utils
 from config import Config

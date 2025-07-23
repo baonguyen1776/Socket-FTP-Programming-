@@ -18,7 +18,10 @@ INSTRUCTIONS TO RUN TESTS:
 """
 
 import pytest
-import ftplib
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'Client'))
+from custom_ftp import FTP, all_errors, error_perm, error_temp, error_proto
 import tempfile
 import shutil
 import os
@@ -112,7 +115,7 @@ def test_real_ftp_connection():
         # Đăng nhập thủ công nếu cần
         if client.ftp is None:
             # Kết nối thủ công
-            client.ftp = ftplib.FTP()
+            client.ftp = FTP()
             client.ftp.connect(host, port)
             client.ftp.login(ftp_user, ftp_pass)
             # Quan trọng: Tạo ftp_helpers nếu kết nối thủ công
@@ -319,7 +322,7 @@ def test_passive_active_mode(ftp_client):
         
         # Đăng nhập thủ công nếu cần
         if ftp_client.ftp is None:
-            ftp_client.ftp = ftplib.FTP()
+            ftp_client.ftp = FTP()
             ftp_client.ftp.connect(host, port)
             ftp_client.ftp.login(ftp_user, ftp_pass)
             # Quan trọng: Tạo ftp_helpers nếu kết nối thủ công
@@ -387,7 +390,7 @@ def test_local_operations(ftp_client):
         
         # Đăng nhập thủ công nếu cần
         if ftp_client.ftp is None:
-            ftp_client.ftp = ftplib.FTP()
+            ftp_client.ftp = FTP()
             ftp_client.ftp.connect(host, port)
             ftp_client.ftp.login(ftp_user, ftp_pass)
             # Quan trọng: Tạo ftp_helpers nếu kết nối thủ công

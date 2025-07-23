@@ -1,5 +1,4 @@
 import tkinter as tk
-import ftplib
 from tkinter import ttk, filedialog, messagebox, simpledialog
 import time
 import threading
@@ -13,7 +12,7 @@ import fnmatch
 # Thêm thư mục hiện tại vào Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from ftplib import FTP, all_errors, error_perm, error_temp, error_proto
+from custom_ftp import FTP, all_errors, error_perm, error_temp, error_proto
 from ftp_command import FTPCommands
 from virus_scan import VirusScan
 from ftp_helpers import FTPHelpers
