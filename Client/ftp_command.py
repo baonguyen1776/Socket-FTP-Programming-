@@ -1,5 +1,5 @@
 import cmd
-from custom_ftp import FTP, all_errors, error_perm, error_temp, error_proto
+from raw_socket_ftp import FTP, all_errors, error_perm, error_temp, error_proto
 import os
 import glob
 import socket

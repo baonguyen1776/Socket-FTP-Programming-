@@ -8,7 +8,7 @@ import socket
 # Thêm thư mục hiện tại vào Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from custom_ftp import FTP, all_errors
+from raw_socket_ftp import FTP, all_errors
 from config import Config
 from utils import Utils
 import logging

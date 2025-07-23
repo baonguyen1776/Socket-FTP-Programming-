@@ -21,7 +21,7 @@ import pytest
 import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'Client'))
-from custom_ftp import FTP, all_errors, error_perm, error_temp, error_proto
+from raw_socket_ftp import FTP, all_errors, error_perm, error_temp, error_proto
 import tempfile
 import shutil
 import os
