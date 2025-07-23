@@ -111,7 +111,7 @@ class FTPClientGUI:
     def __init__(self, root, connection_data=None, on_disconnect=None):
         self.root = root
         self.on_disconnect = on_disconnect
-        self.root.title("FTP Client với Quét Virus - Quản lý File")
+        self.root.title("FTP Client")
         self.root.geometry("1300x800")
         self.root.configure(bg='#f0f0f0')
 
@@ -125,7 +125,7 @@ class FTPClientGUI:
             self.auto_scan_enabled = connection_data.get('auto_scan', True)
             self.connection_info = {
                 'host': connection_data.get('host', ''),
-                'port': connection_data.get('port', 21),
+                'port': connection_data.get('port', ''),
                 'username': connection_data.get('username', '')
             }
         else:

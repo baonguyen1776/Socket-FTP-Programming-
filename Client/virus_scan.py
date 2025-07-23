@@ -72,4 +72,3 @@ class VirusScan:
             Utils.log_event(f"An unexpected error occurred while communicating with the agent: {e}", level=logging.ERROR)
             return False, "ERROR_UNKNOWN"
 
-
