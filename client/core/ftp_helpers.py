@@ -40,7 +40,7 @@ class FTPHelpers:
 
                     self.ftp.retrlines(f"RETR {remote_path}", handle_line)
 
-            Utils.log_event(f"Successfully downloaded {remote_path} to {local_path}")
+            # Utils.log_event(f"Successfully downloaded {remote_path} to {local_path}")
             return True
 
         except Exception as e:
@@ -98,11 +98,11 @@ class FTPHelpers:
 
                     self.ftp.storlines(f"STOR {remote_path}", line_iter())
 
-            Utils.log_event(f"Successfully uploaded {local_path} to {remote_path}")
+            # Utils.log_event(f"Successfully uploaded {local_path} to {remote_path}")
             return True
 
         except Exception as e:
-            Utils.log_event(f"Error while uploading file {local_path}: {e}", level=logging.ERROR)
+            # Utils.log_event(f"Error while uploading file {local_path}: {e}", level=logging.ERROR)
             return False
 
         

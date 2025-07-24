@@ -782,7 +782,7 @@ class FTPClientGUI:
                     self.log_message(f"Cannot download file {remote_file}", "ERROR")
                     messagebox.showerror("Error", f"Cannot download file {remote_file}")
             except Exception as e:
-                self.log_message(f"Lỗi download: {str(e)}", "ERROR")
+                self.log_message(f"Error download: {str(e)}", "ERROR")
             finally:
                 if not progress_window.is_cancelled:
                     self.root.after(0, progress_window.close)
@@ -963,7 +963,7 @@ class FTPClientGUI:
                     self.log_message(f"Warning: {message} Upload canceled.", "WARNING")
                     messagebox.showwarning("Warning", f"{message}\nUpload canceled.")
             except Exception as e:
-                self.log_message(f"Lỗi upload: {str(e)}", "ERROR")
+                self.log_message(f"Error upload: {str(e)}", "ERROR")
             finally:
                 if not progress_window.is_cancelled:
                     self.root.after(0, progress_window.close)
