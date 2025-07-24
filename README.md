@@ -67,7 +67,7 @@ Socket-FTP-Programming/
 - **ClamAV antivirus engine** (bao gồm `clamscan` utility)
 - **FTP Server** (ví dụ: FileZilla Server, vsftpd, hoặc pyftpdlib cho testing)
 
-### Thư viện Python:
+### Thư viện chính Python:
 
 - `tkinter` - Cho giao diện đồ họa
 - `socket` - Cho kết nối mạng
@@ -153,20 +153,20 @@ pip install -r tests/requirements.txt
 Mở terminal đầu tiên và chạy ClamAV Agent:
 
 ```bash
-cd Socket-FTP-Programming
+cd Socket-FTP-Programming-
 python3 clamav_agent/main.py
 ```
 
 **Output mong đợi:**
 
 ```
-2024-01-XX XX:XX:XX,XXX - INFO - Starting ClamAV Agent...
-2024-01-XX XX:XX:XX,XXX - INFO - Server will listen on 0.0.0.0:9001
-2024-01-XX XX:XX:XX,XXX - INFO - ClamAV Agent Server started successfully
-2024-01-XX XX:XX:XX,XXX - INFO - Waiting for connections...
+2025-07-XX XX:XX:XX,XXX - INFO - Starting ClamAV Agent...
+2025-07-XX XX:XX:XX,XXX - INFO - Server will listen on 0.0.0.0:9001
+2025-07-XX XX:XX:XX,XXX - INFO - ClamAV Agent Server started successfully
+2025-07-XX XX:XX:XX,XXX - INFO - Waiting for connections...
 ```
 
-### Bước 2: Khởi động FTP Server (nếu cần)
+### Bước 2: Khởi động FTP Server
 
 Đảm bảo FTP server đang chạy và có tài khoản user để kết nối.
 
