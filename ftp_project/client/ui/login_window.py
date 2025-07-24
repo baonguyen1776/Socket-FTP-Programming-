@@ -1,16 +1,16 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import messagebox, ttk
 import threading
-import sys
+import time
 import os
-import socket
+import sys
 
 # Thêm thư mục hiện tại vào Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from raw_socket_ftp import FTP, all_errors
-from config import Config
-from utils import Utils
+from ..core.raw_socket_ftp import FTP, all_errors
+from ..core.config import Config
+from ..core.utils import Utils
 import logging
 
 class LoginWindow:

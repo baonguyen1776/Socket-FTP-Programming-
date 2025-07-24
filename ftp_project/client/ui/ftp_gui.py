@@ -12,12 +12,12 @@ import fnmatch
 # Thêm thư mục hiện tại vào Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from raw_socket_ftp import FTP, all_errors, error_perm, error_temp, error_proto
-from ftp_command import FTPCommands
-from virus_scan import VirusScan
-from ftp_helpers import FTPHelpers
-from utils import Utils
-from config import Config
+from ..core.raw_socket_ftp import FTP, all_errors, error_perm, error_temp, error_proto
+from ..core.ftp_command import FTPCommands
+from ..core.virus_scan import VirusScan
+from ..core.ftp_helpers import FTPHelpers
+from ..core.utils import Utils
+from ..core.config import Config
 import logging
 from datetime import datetime
 
@@ -110,7 +110,7 @@ class FTPClientGUI:
     def __init__(self, root, connection_data=None, on_disconnect=None):
         self.root = root
         self.on_disconnect = on_disconnect
-        self.root.title("FTP Client")
+        self.root.title("FTP Client với Quét Virus - Quản lý File")
         self.root.geometry("1300x800")
         self.root.configure(bg='#f0f0f0')
 
@@ -124,7 +124,7 @@ class FTPClientGUI:
             self.auto_scan_enabled = connection_data.get('auto_scan', True)
             self.connection_info = {
                 'host': connection_data.get('host', ''),
-                'port': connection_data.get('port', ''),
+                'port': connection_data.get('port', 21),
                 'username': connection_data.get('username', '')
             }
         else:

@@ -1,12 +1,12 @@
 import cmd
-from raw_socket_ftp import FTP, all_errors, error_perm, error_temp, error_proto
+from .raw_socket_ftp import FTP, all_errors, error_perm, error_temp, error_proto
 import os
 import glob
 import socket
-from ftp_helpers import FTPHelpers
-from virus_scan import VirusScan
-from utils import Utils
-from config import Config
+from .ftp_helpers import FTPHelpers
+from .virus_scan import VirusScan
+from .utils import Utils
+from .config import Config
 import logging
 import shlex
 
