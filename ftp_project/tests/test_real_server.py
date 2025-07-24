@@ -1,13 +1,27 @@
 """
-Test FTP Client với real server (test.rebex.net)
-Lưu ý: Test này cần kết nối internet và có thể thất bại nếu server không khả dụng
+Real FTP Server Integration Tests
+Tests that actually connect to and interact with real FTP servers
+
+INSTRUCTIONS TO RUN TESTS:
+1. Set up FTP credentials as environment variables:
+   - For PowerShell: 
+     $env:FTP_TEST_USER="username"
+     $env:FTP_TEST_PASS="password"
+   - For CMD: 
+     set FTP_TEST_USER=username
+     set FTP_TEST_PASS=password
+
+2. Run tests:
+   - All tests: pytest test_real_server.py -v
+   - Specific test: pytest test_real_server.py::test_directory_navigation -v
+   - Through menu: python test_runner.py
 """
 
 import pytest
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'client'))
-from client.core.raw_socket_ftp import FTP, all_errors, error_perm, error_temp, error_proto
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'Client'))
+from raw_socket_ftp import FTP, all_errors, error_perm, error_temp, error_proto
 import tempfile
 import shutil
 import os
@@ -27,8 +41,8 @@ if client_path not in sys.path:
 
 import os
 from test_config import TestConfig
-from client.core.ftp_command import FTPCommands
-from client.core.ftp_helpers import FTPHelpers
+from Client.ftp_command import FTPCommands
+from Client.ftp_helpers import FTPHelpers
 
 # Kiểm tra biến môi trường FTP_TEST_USER và FTP_TEST_PASS
 ftp_user = os.environ.get('FTP_TEST_USER')

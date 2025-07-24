@@ -4,15 +4,20 @@ import sys
 import os
 import logging
 
-# Add current directory to Python path
+# Thêm thư mục hiện tại vào Python path
 current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
-sys.path.insert(0, parent_dir)
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
 
-from .ftp_gui import FTPClientGUI
-from .login_window import LoginWindow
-from ..core.config import Config
-from ..core.utils import Utils
+# Import với error handling
+try:
+    from login_window import LoginWindow  # type: ignore
+    from ftp_gui import FTPClientGUI  # type: ignore
+    from utils import Utils  # type: ignore
+except ImportError as e:
+    print(f"Lỗi import: {e}")
+    print("Đảm bảo bạn đang chạy từ thư mục chứa các file Python")
+    sys.exit(1)
 
 class FTPClientApp:
     def __init__(self):

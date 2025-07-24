@@ -1,15 +1,11 @@
-import sys
-import os
+from ftp_command import FTPCommands
+from utils import Utils
+import logging
 
-# Add parent directories to path
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
-sys.path.insert(0, parent_dir)
+class FTPClientApp(FTPCommands):
+    def __init__(self):
+        super().__init__()
+        Utils.log_event("FTP Client application has started.", level=logging.INFO)
 
-from core.ftp_command import FTPCommands
-from core.raw_socket_ftp import FTP
-
-if __name__ == "__main__":
-    ftp = FTP()
-    client = FTPCommands(ftp)
-    client.cmdloop()
+    def start(self):
+        self.cmdloop()

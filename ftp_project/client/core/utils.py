@@ -1,6 +1,5 @@
-import logging
+import logging 
 from .config import Config
-import os
 
 # Cấu hình logging
 logging.basicConfig(level=Config.LOG_LEVEL, 

@@ -1,1 +1,0 @@
-# ClamAV Agent Package
