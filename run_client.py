@@ -13,7 +13,7 @@ def run_gui():
     try:
         from client.ui.main import FTPClientApp
         app = FTPClientApp()
-        app.run()
+        app.start()
     except ImportError as e:
         print(f"Error importing GUI components: {e}")
         print("Make sure tkinter is installed")
