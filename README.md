@@ -1,199 +1,350 @@
-# Secure FTP Client with Virus Scanning via ClamAV Agent
+# Secure FTP Client với Virus Scanning sử dụng ClamAV Agent
 
-This project implements a secure FTP client that integrates with a ClamAV agent for virus scanning before file uploads. It consists of two main components: an FTP Client and a ClamAV Agent.
+Dự án này triển khai một FTP client bảo mật tích hợp với ClamAV agent để quét virus trước khi upload file. Hệ thống bao gồm hai thành phần chính: FTP Client và ClamAV Agent.
 
-## Components
+## Tổng quan hệ thống
 
-1.  **FTP Client**: A custom FTP client application that interacts with an FTP server and the ClamAV Agent. It supports various FTP commands, including file and directory operations, and ensures files are scanned for viruses before being uploaded.
-2.  **ClamAV Agent**: A server-side component that receives files from the FTP Client, scans them using the `clamscan` utility (part of ClamAV), and returns the scan result (OK or INFECTED) back to the client.
+1. **FTP Client**: Ứng dụng client FTP tùy chỉnh tương tác với FTP server và ClamAV Agent. Hỗ trợ các lệnh FTP chuẩn và đảm bảo tất cả file được quét virus trước khi upload.
+2. **ClamAV Agent**: Thành phần server-side nhận file từ FTP Client, quét bằng `clamscan` utility và trả về kết quả quét (OK hoặc INFECTED).
 
-## System Requirements
+## Cấu trúc dự án chi tiết
 
-To run this project, you will need:
-
-- Python 3.x
-- `tkinter` library (usually included with Python installations, but may need to be installed separately on some systems)
-- `pyftpdlib` (for the FTP server, if you choose to use it)
-- ClamAV antivirus engine (including `clamscan` utility)
-- An FTP Server (e.g., FileZilla Server, vsftpd)
-
-## Setup Instructions
-
-### 1. ClamAV Installation and Configuration
-
-ClamAV is an open-source antivirus engine. You need to install it on the machine where the `ClamAV Agent` will run.
-
-**On Ubuntu/Debian:**
-
-```bash
-sudo apt update
-sudo apt install clamav clamav-daemon
+```
+Socket-FTP-Programming/
+├── README.md                    # File hướng dẫn này
+├── run_client.py               # Script chính để chạy FTP Client
+├── .gitignore                  # File gitignore
+│
+├── clamav_agent/               # Thư mục ClamAV Agent
+│   ├── __init__.py            # Package initialization
+│   ├── main.py                # Entry point chính của ClamAV Agent
+│   ├── sever_clam.py          # Server ClamAV Agent chính
+│   ├── handler.py             # Xử lý kết nối client
+│   └── scanner.py             # Module quét virus
+│
+├── client/                     # Thư mục FTP Client
+│   ├── __init__.py            # Package initialization
+│   ├── README_RAW_SOCKET.md   # Tài liệu về raw socket
+│   │
+│   ├── core/                  # Core functionality
+│   │   ├── __init__.py
+│   │   ├── config.py          # Cấu hình ứng dụng
+│   │   ├── ftp_command.py     # Xử lý lệnh FTP
+│   │   ├── ftp_helpers.py     # Các hàm hỗ trợ FTP
+│   │   ├── raw_socket_ftp.py  # FTP client sử dụng raw socket
+│   │   ├── utils.py           # Tiện ích chung
+│   │   └── virus_scan.py      # Tích hợp với ClamAV Agent
+│   │
+│   ├── ui/                    # User Interface
+│   │   ├── __init__.py
+│   │   ├── main.py            # Entry point cho GUI
+│   │   ├── ftp_gui.py         # Giao diện FTP chính
+│   │   └── login_window.py    # Cửa sổ đăng nhập
+│   │
+│   └── networking/            # Network components
+│       ├── __init__.py
+│       └── client.py          # Network client utilities
+│
+└── tests/                      # Thư mục test
+    ├── __init__.py            # Test package initialization
+    ├── README.md              # Hướng dẫn test
+    ├── conftest.py            # Cấu hình pytest
+    ├── pytest.ini            # Cấu hình pytest
+    ├── requirements.txt       # Dependencies cho testing
+    ├── cleanup.py             # Script dọn dẹp test
+    ├── test_config.py         # Test cấu hình
+    ├── test_ftp_*.py          # Các file test FTP
+    ├── test_real_server.py    # Test với server thực
+    ├── test_runner.py         # Test runner
+    └── reports/               # Thư mục báo cáo test
 ```
 
-**On macOS (using Homebrew):**
+## Yêu cầu hệ thống
 
+### Phần mềm cần thiết:
+- **Python 3.7+** (khuyến nghị Python 3.8 trở lên)
+- **tkinter** (thường đi kèm với Python, có thể cần cài đặt riêng trên một số hệ thống)
+- **ClamAV antivirus engine** (bao gồm `clamscan` utility)
+- **FTP Server** (ví dụ: FileZilla Server, vsftpd, hoặc pyftpdlib cho testing)
+
+### Thư viện Python:
+- `tkinter` - Cho giao diện đồ họa
+- `socket` - Cho kết nối mạng
+- `threading` - Cho xử lý đa luồng
+- `logging` - Cho ghi log
+- `pytest` - Cho testing (tùy chọn)
+
+## Hướng dẫn cài đặt
+
+### 1. Cài đặt ClamAV
+
+**Trên Ubuntu/Debian:**
+```bash
+sudo apt update
+sudo apt install clamav clamav-daemon clamav-freshclam
+```
+
+**Trên CentOS/RHEL/Fedora:**
+```bash
+sudo yum install clamav clamav-update
+# hoặc
+sudo dnf install clamav clamav-update
+```
+
+**Trên macOS (sử dụng Homebrew):**
 ```bash
 brew install clamav
 ```
 
-After installation, ensure the ClamAV daemon is running and update the virus definitions:
-
+**Cập nhật cơ sở dữ liệu virus:**
 ```bash
 sudo freshclam
+```
+
+**Khởi động ClamAV daemon (Linux):**
+```bash
 sudo systemctl start clamav-freshclam
 sudo systemctl enable clamav-freshclam
 sudo systemctl start clamav-daemon
 sudo systemctl enable clamav-daemon
 ```
 
-### 2. FTP Server Setup
+### 2. Cài đặt FTP Server (tùy chọn)
 
-You can use any FTP server software. Here are instructions for a couple of popular choices:
+#### Sử dụng pyftpdlib (đơn giản cho testing):
+```bash
+pip install pyftpdlib
+```
 
-#### a. FileZilla Server (Windows)
+#### Hoặc cài đặt vsftpd (Linux):
+```bash
+sudo apt install vsftpd
+```
 
-1.  Download and install FileZilla Server from [https://filezilla-project.org/](https://filezilla-project.org/)
-2.  Launch FileZilla Server Interface.
-3.  Go to `Edit > Users` and add a new user. Set a password and add a shared folder (this will be the root directory for your FTP client).
-4.  Ensure the server is running and accessible from the machine where your FTP client will run.
-
-#### b. vsftpd (Linux)
-
-1.  Install vsftpd:
-    ```bash
-    sudo apt install vsftpd
-    ```
-2.  Configure vsftpd (edit `/etc/vsftpd.conf`). A minimal setup might involve:
-    ```
-    anonymous_enable=NO
-    local_enable=YES
-    write_enable=YES
-    chroot_local_user=YES
-    ```
-3.  Restart vsftpd:
-    ```bash
-    sudo systemctl restart vsftpd
-    ```
-4.  Create an FTP user and set permissions for their home directory.
-
-### 3. Project Dependencies (Python)
-
-Navigate to the `Client` and `ClamAvAgent` directories and install any required Python packages. Based on the code, `tkinter` is a standard library, but `pyftpdlib` might be needed if you're running a Python-based FTP server for testing.
+### 3. Chuẩn bị môi trường Python
 
 ```bash
-pip install pyftpdlib # If you plan to use a Python FTP server for testing
+# Clone repository (nếu cần)
+git clone <repository-url>
+cd Socket-FTP-Programming
+
+# Tạo virtual environment (khuyến nghị)
+python3 -m venv venv
+source venv/bin/activate  # Linux/macOS
+# hoặc
+venv\Scripts\activate     # Windows
+
+# Cài đặt dependencies cho testing (tùy chọn)
+pip install -r tests/requirements.txt
 ```
 
-## Running the Programs
+## Hướng dẫn chạy chương trình
 
-This project involves three main entities running on potentially separate machines (or different terminal windows/ports on the same machine):
+### Bước 1: Khởi động ClamAV Agent
 
-1.  **FTP Client**
-2.  **ClamAV Agent**
-3.  **FTP Server** (third-party software)
-
-### 1. Start the ClamAV Agent
-
-Open a terminal and navigate to the `ClamAvAgent` directory:
+Mở terminal đầu tiên và chạy ClamAV Agent:
 
 ```bash
-cd ClamAvAgent
-python3 main.py
+cd Socket-FTP-Programming
+python3 clamav_agent/main.py
 ```
 
-The agent will start listening for connections on `0.0.0.0:9001` (default, configurable in `main.py`). You should see log messages indicating it's running.
+**Output mong đợi:**
+```
+2024-01-XX XX:XX:XX,XXX - INFO - Starting ClamAV Agent...
+2024-01-XX XX:XX:XX,XXX - INFO - Server will listen on 0.0.0.0:9001
+2024-01-XX XX:XX:XX,XXX - INFO - ClamAV Agent Server started successfully
+2024-01-XX XX:XX:XX,XXX - INFO - Waiting for connections...
+```
 
-### 2. Start the FTP Server
+### Bước 2: Khởi động FTP Server (nếu cần)
 
-Ensure your chosen FTP server (FileZilla, vsftpd, etc.) is running and configured with a user account that the FTP client can use.
-
-### 3. Start the FTP Client
-
-Open a new terminal and navigate to the `Client` directory:
-
+#### Sử dụng pyftpdlib (đơn giản):
 ```bash
-cd Client
-python3 main.py
+# Mở terminal thứ hai
+python3 -m pyftpdlib -p 21 -u user -P password -d /tmp/ftp
 ```
 
-This will launch a graphical login window. Enter the FTP server details (host, port, username, password) and the ClamAV Agent details (host, port). The default ClamAV Agent port is `9001`.
+#### Hoặc sử dụng FTP server có sẵn
+Đảm bảo FTP server đang chạy và có tài khoản user để kết nối.
 
-## Sample Commands and Expected Outputs
+### Bước 3: Khởi động FTP Client
 
-Once connected via the FTP Client GUI, you can perform various FTP operations. The client will automatically send files to the ClamAV Agent for scanning before `put` or `mput` operations.
+Mở terminal thứ ba và chạy FTP Client:
 
-### Example: Uploading a Clean File
-
-1.  Ensure ClamAV Agent is running.
-2.  Connect FTP Client to your FTP server.
-3.  In the FTP Client GUI, use the `put` command (or the upload button) to upload a clean file (e.g., a simple text file).
-
-    **Expected Output (ClamAV Agent Terminal):**
-
-    ```
-    [Timestamp] - INFO - Received file for scanning: /tmp/temp_file_name.txt
-    [Timestamp] - INFO - Scan result for /tmp/temp_file_name.txt: OK
-    ```
-
-    **Expected Output (FTP Client GUI/Logs):**
-    The file should be successfully uploaded to the FTP server.
-
-### Example: Uploading an Infected File
-
-To test with an infected file, you can use the EICAR test file, which is a harmless file detected as a virus by antivirus software.
-
-1.  Create a file named `eicar.txt` with the following content:
-    ```
-    X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*
-    ```
-2.  Attempt to upload `eicar.txt` using the FTP Client.
-
-    **Expected Output (ClamAV Agent Terminal):**
-
-    ```
-    [Timestamp] - INFO - Received file for scanning: /tmp/eicar.txt
-    [Timestamp] - INFO - Scan result for /tmp/eicar.txt: INFECTED
-    ```
-
-    **Expected Output (FTP Client GUI/Logs):**
-    The upload should be aborted, and a warning message should be displayed, indicating that the file is infected and cannot be uploaded.
-
-### Other FTP Commands
-
-The client supports standard FTP commands. You can type them into the command input field in the GUI:
-
-- `ls`: List files and directories on the FTP server.
-- `cd <directory>`: Change directory on the FTP server.
-- `pwd`: Print working directory on the FTP server.
-- `mkdir <directory_name>`: Create a new directory on the FTP server.
-- `rmdir <directory_name>`: Remove a directory on the FTP server.
-- `delete <file_name>`: Delete a file on the FTP server.
-- `rename <old_name> <new_name>`: Rename a file on the FTP server.
-- `get <file_name>`: Download a file from the FTP server.
-- `mput <wildcard>`: Upload multiple files (e.g., `mput *.txt`). Each file will be scanned.
-- `mget <wildcard>`: Download multiple files.
-- `quit` or `bye`: Exit the FTP client.
-- `help` or `?`: Display help information.
-
-## Project Structure
-
+#### Chạy với giao diện đồ họa (GUI):
+```bash
+cd Socket-FTP-Programming
+python3 run_client.py --gui
 ```
-Socket-FTP-Programming-/
-├── ClamAvAgent/
-│   ├── handler.py
-│   ├── main.py
-│   ├── scanner.py
-│   └── sever_clam.py
-├── Client/
-│   ├── client.py
-│   ├── config.py
-│   ├── ftp_command.py
-│   ├── ftp_gui.py
-│   ├── ftp_helpers.py
-│   ├── login_window.py
-│   ├── main.py
-│   ├── utils.py
-│   └── virus_scan.py
-└── tests/
-    ├── ... (test files)
+
+#### Chạy với giao diện dòng lệnh (CLI):
+```bash
+cd Socket-FTP-Programming
+python3 run_client.py --cli
 ```
+
+#### Chạy mặc định (CLI):
+```bash
+cd Socket-FTP-Programming
+python3 run_client.py
+```
+
+## Cấu hình hệ thống
+
+### Cấu hình ClamAV Agent
+
+Chỉnh sửa file `clamav_agent/main.py`:
+```python
+HOST = '0.0.0.0'    # Địa chỉ IP để lắng nghe
+PORT = 9001         # Cổng để lắng nghe
+```
+
+### Cấu hình FTP Client
+
+Chỉnh sửa file `client/core/config.py`:
+```python
+class Config:
+    # Cấu hình FTP Server
+    FTP_HOST = '127.0.0.1'      # Địa chỉ FTP server
+    FTP_PORT = 21               # Cổng FTP server
+    
+    # Cấu hình ClamAV Agent
+    CLAMAV_AGENT_HOST = '127.0.0.1'  # Địa chỉ ClamAV Agent
+    CLAMAV_AGENT_PORT = 9001         # Cổng ClamAV Agent
+    
+    # Thư mục download
+    DOWNLOAD_DIR = os.path.join(os.getcwd(), 'downloads')
+```
+
+## Hướng dẫn sử dụng
+
+### 1. Kết nối FTP
+
+**Với GUI:**
+1. Nhập thông tin FTP server (host, port, username, password)
+2. Nhập thông tin ClamAV Agent (host, port)
+3. Click "Connect"
+
+**Với CLI:**
+```
+ftp> open <host> <port>
+Username: <username>
+Password: <password>
+```
+
+### 2. Các lệnh FTP hỗ trợ
+
+| Lệnh | Mô tả | Ví dụ |
+|------|-------|-------|
+| `ls` | Liệt kê file/thư mục | `ls` |
+| `cd <dir>` | Chuyển thư mục | `cd documents` |
+| `pwd` | Hiển thị thư mục hiện tại | `pwd` |
+| `mkdir <dir>` | Tạo thư mục | `mkdir newfolder` |
+| `rmdir <dir>` | Xóa thư mục | `rmdir oldfolder` |
+| `delete <file>` | Xóa file | `delete oldfile.txt` |
+| `rename <old> <new>` | Đổi tên file | `rename old.txt new.txt` |
+| `get <file>` | Download file | `get document.pdf` |
+| `put <file>` | Upload file (có quét virus) | `put image.jpg` |
+| `mget <pattern>` | Download nhiều file | `mget *.txt` |
+| `mput <pattern>` | Upload nhiều file (có quét virus) | `mput *.pdf` |
+| `help` | Hiển thị trợ giúp | `help` |
+| `quit` | Thoát | `quit` |
+
+### 3. Quét virus tự động
+
+Khi upload file (`put` hoặc `mput`), hệ thống sẽ:
+1. Gửi file đến ClamAV Agent
+2. ClamAV Agent quét file bằng `clamscan`
+3. Trả về kết quả: OK hoặc INFECTED
+4. Chỉ upload file nếu kết quả là OK
+
+## Testing
+
+### Chạy test suite:
+```bash
+cd tests
+python3 -m pytest -v
+```
+
+### Chạy test cụ thể:
+```bash
+python3 -m pytest test_ftp_navigation.py -v
+```
+
+### Tạo báo cáo test:
+```bash
+python3 -m pytest --html=reports/report.html
+```
+
+## Ví dụ sử dụng
+
+### Test với file sạch:
+1. Tạo file text: `echo "Hello World" > test.txt`
+2. Upload: `put test.txt`
+3. Kết quả: File được upload thành công
+
+### Test với file virus (EICAR):
+1. Tạo file EICAR:
+```bash
+echo 'X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*' > eicar.txt
+```
+2. Upload: `put eicar.txt`
+3. Kết quả: Upload bị từ chối, hiển thị cảnh báo virus
+
+## Troubleshooting
+
+### Lỗi thường gặp:
+
+1. **ClamAV Agent không khởi động được:**
+   - Kiểm tra ClamAV đã được cài đặt: `clamscan --version`
+   - Kiểm tra port 9001 có bị chiếm: `netstat -tulpn | grep 9001`
+
+2. **FTP Client không kết nối được:**
+   - Kiểm tra FTP server đang chạy
+   - Kiểm tra firewall settings
+   - Kiểm tra username/password
+
+3. **Quét virus không hoạt động:**
+   - Kiểm tra ClamAV Agent đang chạy
+   - Kiểm tra cấu hình CLAMAV_AGENT_HOST và PORT
+   - Cập nhật virus database: `sudo freshclam`
+
+4. **GUI không hiển thị:**
+   - Cài đặt tkinter: `sudo apt install python3-tkinter`
+   - Sử dụng CLI mode thay thế
+
+### Log files:
+- FTP Client: `ftp_client.log`
+- ClamAV Agent: Console output
+
+## Tính năng nâng cao
+
+- **Multi-threading**: Hỗ trợ xử lý đồng thời nhiều kết nối
+- **Raw Socket**: Sử dụng raw socket implementation
+- **Graceful shutdown**: Tắt server một cách an toàn
+- **Comprehensive logging**: Ghi log chi tiết cho debugging
+- **Extensive testing**: Test suite đầy đủ với pytest
+
+## Bảo mật
+
+- Tất cả file upload đều được quét virus
+- Kết nối an toàn giữa client và agent
+- Validation đầu vào để tránh injection attacks
+- Graceful error handling
+
+## Đóng góp
+
+1. Fork repository
+2. Tạo feature branch
+3. Commit changes
+4. Push to branch
+5. Tạo Pull Request
+
+## License
+
+[Thêm thông tin license nếu có]
+
+---
+
+**Lưu ý:** Đây là phần mềm giáo dục. Trong môi trường production, cần thêm các biện pháp bảo mật như SSL/TLS, authentication mạnh hơn, và monitoring.
