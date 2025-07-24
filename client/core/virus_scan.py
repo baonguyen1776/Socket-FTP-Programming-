@@ -1,8 +1,6 @@
-import os
-import subprocess
 import socket
-import json
-import time
+import struct
+import os
 from .config import Config
 from .utils import Utils
 import logging
@@ -73,5 +71,4 @@ class VirusScan:
         except Exception as e:
             Utils.log_event(f"An unexpected error occurred while communicating with the agent: {e}", level=logging.ERROR)
             return False, "ERROR_UNKNOWN"
-
 

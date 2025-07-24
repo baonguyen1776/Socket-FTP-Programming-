@@ -9,15 +9,9 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
 
-# Import với error handling
-try:
-    from login_window import LoginWindow  # type: ignore
-    from ftp_gui import FTPClientGUI  # type: ignore
-    from utils import Utils  # type: ignore
-except ImportError as e:
-    print(f"Lỗi import: {e}")
-    print("Đảm bảo bạn đang chạy từ thư mục chứa các file Python")
-    sys.exit(1)
+from .login_window import LoginWindow
+from .ftp_gui import FTPClientGUI
+from ..core.utils import Utils
 
 class FTPClientApp:
     def __init__(self):

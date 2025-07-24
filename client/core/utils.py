@@ -1,5 +1,5 @@
 import logging 
-from config import Config
+from .config import Config
 
 # Cấu hình logging
 logging.basicConfig(level=Config.LOG_LEVEL, 
