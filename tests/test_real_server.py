@@ -20,8 +20,8 @@ INSTRUCTIONS TO RUN TESTS:
 import pytest
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'Client'))
-from raw_socket_ftp import FTP, all_errors, error_perm, error_temp, error_proto
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+from client.core.raw_socket_ftp import FTP, all_errors, error_perm, error_temp, error_proto
 import tempfile
 import shutil
 import os
@@ -41,8 +41,8 @@ if client_path not in sys.path:
 
 import os
 from test_config import TestConfig
-from Client.ftp_command import FTPCommands
-from Client.ftp_helpers import FTPHelpers
+from client.core.ftp_command import FTPCommands
+from client.core.ftp_helpers import FTPHelpers
 
 # Kiểm tra biến môi trường FTP_TEST_USER và FTP_TEST_PASS
 ftp_user = os.environ.get('FTP_TEST_USER')
