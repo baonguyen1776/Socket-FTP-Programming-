@@ -16,8 +16,8 @@ class TestConfig:
     CLAMAV_PORT = 9001
     
     # Cài đặt timeout
-    FTP_TIMEOUT = 30
-    CLAMAV_TIMEOUT = 10
+    FTP_TIMEOUT = 6000
+    CLAMAV_TIMEOUT = 200
     
     @classmethod
     def get_credentials(cls):

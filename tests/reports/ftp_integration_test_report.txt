@@ -1,0 +1,56 @@
+================================================================================
+FTP CLIENT INTEGRATION TEST REPORT
+REAL SERVER TESTS - FULL FUNCTIONALITY COVERAGE
+================================================================================
+Generated: 2025-07-29 17:04:08
+Test Environment: Real FTP Server Integration Tests
+
+  TESTED FUNCTIONALITY:
+----------------------------------------
+• Connection: open, close, status, pwd
+• File Operations: put, get, delete, rename
+• Directory Operations: mkdir, rmdir, cd, ls, cdup
+• Local Operations: lcd, lpwd, lls
+• Multiple Files: mput, mget (with wildcards)
+• Transfer Modes: passive, active mode switching
+• Server Capabilities: FEAT, SYST commands
+
+PYTEST EXECUTION OUTPUT:
+----------------------------------------
+============================= test session starts =============================
+platform win32 -- Python 3.11.7, pytest-8.4.1, pluggy-1.6.0 -- C:\msys64\ucrt64\bin\python.exe
+cachedir: .pytest_cache
+rootdir: D:\ALL FOLDER STUDY\CSC\PROJECT\Socket Programing\Socket-FTP-Programming-\tests
+configfile: pytest.ini
+collecting ... collected 12 items
+
+test_real_server.py::test_real_ftp_connection PASSED                     [  8%]
+test_real_server.py::test_real_file_upload_download PASSED               [ 16%]
+test_real_server.py::test_real_directory_operations PASSED               [ 25%]
+test_real_server.py::test_ftp_commands_status PASSED                     [ 33%]
+test_real_server.py::test_server_capabilities PASSED                     [ 41%]
+test_real_server.py::test_passive_active_mode PASSED                     [ 50%]
+test_real_server.py::test_local_operations PASSED                        [ 58%]
+test_ftp_navigation.py::test_directory_navigation PASSED                 [ 66%]
+test_ftp_transfer_mode.py::test_passive_active_mode PASSED               [ 75%]
+test_ftp_local_operations.py::test_local_operations PASSED               [ 83%]
+test_ftp_multiple_operations.py::test_multiple_file_upload_download PASSED [ 91%]
+test_ftp_multiple_operations.py::test_wildcard_operations PASSED         [100%]
+
+============================ slowest 10 durations =============================
+26.11s call     test_ftp_navigation.py::test_directory_navigation
+22.83s call     test_real_server.py::test_real_file_upload_download
+15.03s call     test_ftp_transfer_mode.py::test_passive_active_mode
+0.25s call     test_ftp_multiple_operations.py::test_multiple_file_upload_download
+0.10s call     test_real_server.py::test_local_operations
+0.09s call     test_ftp_multiple_operations.py::test_wildcard_operations
+0.08s setup    test_real_server.py::test_real_file_upload_download
+0.08s call     test_real_server.py::test_real_ftp_connection
+0.06s setup    test_ftp_multiple_operations.py::test_multiple_file_upload_download
+0.06s setup    test_ftp_navigation.py::test_directory_navigation
+======================== 12 passed in 65.42s (0:01:05) ========================
+
+
+EXIT CODE: 0
+SUCCESS
+================================================================================

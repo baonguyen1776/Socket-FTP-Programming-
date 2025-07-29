@@ -11,10 +11,10 @@ import sys
 from pathlib import Path
 
 # Add Client directory to path
-sys.path.insert(0, str(Path(__file__).parent.parent / "Client"))
+sys.path.insert(0, str(Path(__file__).parent.parent / "client"))
 
 from test_config import TestConfig
-from Client.config import Config
+from client.core.config import Config
 
 # Reuse fixtures from test_real_server.py
 from test_real_server import ftp_client, has_credentials
